@@ -24,7 +24,7 @@
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="7dp"
-        android:hint="search"
+        android:hint="@string/animal_name"
         android:inputType="text"
         android:maxLines="@integer/material_motion_duration_long_1"
         app:layout_constraintEnd_toStartOf="@+id/add_btn"
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="7dp"
         android:layout_marginEnd="16dp"
-        android:text="ADD"
+        android:text="@string/search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/enter_search"
         app:layout_constraintTop_toTopOf="parent" />
