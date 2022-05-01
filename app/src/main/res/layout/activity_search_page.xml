@@ -6,41 +6,39 @@
     android:layout_height="match_parent"
     tools:context=".SearchPage">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/enter_search" />
+
     <EditText
-        android:id="@+id/search_bar"
+        android:id="@+id/enter_search"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_marginStart="75dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="75dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="7dp"
         android:hint="search"
         android:inputType="text"
         android:maxLines="@integer/material_motion_duration_long_1"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/add_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <CheckBox
-        android:id="@+id/search_completed"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="27dp"
-        android:layout_marginTop="30dp"
-        app:layout_constraintEnd_toStartOf="@+id/search_bar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/delete_search"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="29dp"
-        android:layout_marginEnd="29dp"
-        android:clickable="true"
-        android:gravity="center"
-        android:text="x"
+    <Button
+        android:id="@+id/add_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="16dp"
+        android:text="ADD"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/search_bar"
+        app:layout_constraintStart_toEndOf="@+id/enter_search"
         app:layout_constraintTop_toTopOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
