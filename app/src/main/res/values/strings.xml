@@ -2,4 +2,5 @@
     <string name="app_name">SDZooSeeker_Team_64</string>
     <string name="search">SEARCH</string>
     <string name="animal_name">Animal name</string>
+    <string name="searchvalue">Search</string>
 </resources>
