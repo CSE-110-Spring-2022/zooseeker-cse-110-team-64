@@ -3,14 +3,9 @@
  */
 package com.example.sdzooseeker_team_64;
 
-        import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-
-import java.util.Map;
-
-public class App {
+        public class App {
     public static void main(String[] args) {
+        /* TODO reference, delete after
         // "source" and "sink" are graph terms for the start and end
         String start = "entrance_exit_gate";
         String goal = "elephant_odyssey";
@@ -34,6 +29,6 @@ public class App {
                     vInfo.get(g.getEdgeSource(e).toString()).name,
                     vInfo.get(g.getEdgeTarget(e).toString()).name);
             i++;
-        }
+        }*/
     }
 }
