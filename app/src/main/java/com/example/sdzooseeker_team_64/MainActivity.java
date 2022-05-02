@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
 
+            // filter text when search box content changes
             @Override
             public boolean onQueryTextChange(String newText) {
 
