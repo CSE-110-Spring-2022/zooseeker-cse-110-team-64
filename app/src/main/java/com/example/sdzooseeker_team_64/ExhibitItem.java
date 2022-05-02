@@ -15,7 +15,8 @@ import java.util.List;
 
 public class ExhibitItem {
     // 1. public fields
-    // comment
+
+
     // 2. Constructor matching field above.
 
     //3. Factory method for loading our JSON.
