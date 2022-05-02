@@ -192,6 +192,59 @@ public class SearchBarTests {
 
     }
 
+    // Espresso test for testing searching for keyword that has no result in the database.
+    @Test
+    public void testSearchingForKeywordWithNoResult() {
+
+        ViewInteraction actionMenuItemView = onView(
+                allOf(withId(R.id.search), withContentDescription("Search"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(androidx.appcompat.R.id.action_bar),
+                                        1),
+                                0),
+                        isDisplayed()));
+        actionMenuItemView.perform(click());
+
+        ViewInteraction searchAutoComplete = onView(
+                allOf(withId(androidx.appcompat.R.id.search_src_text),
+                        childAtPosition(
+                                allOf(withId(androidx.appcompat.R.id.search_plate),
+                                        childAtPosition(
+                                                withId(androidx.appcompat.R.id.search_edit_frame),
+                                                1)),
+                                0),
+                        isDisplayed()));
+        searchAutoComplete.perform(replaceText("jaghsdbhjabkf"), closeSoftKeyboard());
+
+        ViewInteraction searchAutoComplete2 = onView(
+                allOf(withId(androidx.appcompat.R.id.search_src_text), withText("jaghsdbhjabkf"),
+                        childAtPosition(
+                                allOf(withId(androidx.appcompat.R.id.search_plate),
+                                        childAtPosition(
+                                                withId(androidx.appcompat.R.id.search_edit_frame),
+                                                1)),
+                                0),
+                        isDisplayed()));
+        searchAutoComplete2.perform(pressImeActionButton());
+
+
+        // Test if the results count matches expectation.
+        final int count = 0;
+        onView(withId(R.id.list)).check(matches(new TypeSafeMatcher<View>() {
+            @Override
+            public boolean matchesSafely(View view) {
+                ListView listView = (ListView) view;
+                return count == listView.getCount();
+            }
+
+            @Override
+            public void describeTo(Description description) {
+
+            }
+        }));
+    }
+
     private static Matcher<View> childAtPosition(
             final Matcher<View> parentMatcher, final int position) {
 
