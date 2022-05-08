@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -24,6 +25,10 @@ public class MainActivity extends AppCompatActivity {
     ArrayAdapter<String> adapter;
     ListView newlist;
     //end
+
+    //button function start
+    Button planButton;
+    //button function end
     ListView listView;
     String[] exhibitNames;
     ArrayAdapter<String> arrayAdapter;
@@ -40,13 +45,17 @@ public class MainActivity extends AppCompatActivity {
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, exhibitNames);
         listView.setAdapter(arrayAdapter);
 
+        //button function start
+        planButton = findViewById(R.id.plan_btn);
+        planButton.setOnClickListener(this::onPlanClicked);
+        //button function end
+
         // new:
         newlist = findViewById(R.id.new_list);
         adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1,
                 exhibitList);
         newlist.setAdapter(adapter);
-
         // end:
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -103,5 +112,10 @@ public class MainActivity extends AppCompatActivity {
         names = exhibitNames.toArray(names);
 
         return names;
+    }
+
+    void onPlanClicked(View view) {
+        exhibitList.clear();
+        adapter.notifyDataSetChanged();
     }
 }
