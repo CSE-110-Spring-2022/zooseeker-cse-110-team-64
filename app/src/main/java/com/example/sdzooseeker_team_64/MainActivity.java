@@ -1,12 +1,15 @@
 package com.example.sdzooseeker_team_64;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -16,10 +19,13 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
+    //new:
+    ArrayList<String> exhibitList = new ArrayList<String>();
+    ArrayAdapter<String> adapter;
+    ListView newlist;
+    //end
     ListView listView;
-
     String[] exhibitNames;
-
     ArrayAdapter<String> arrayAdapter;
 
     @Override
@@ -34,6 +40,25 @@ public class MainActivity extends AppCompatActivity {
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, exhibitNames);
         listView.setAdapter(arrayAdapter);
 
+        // new:
+        newlist = findViewById(R.id.new_list);
+        adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1,
+                exhibitList);
+        newlist.setAdapter(adapter);
+
+        // end:
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String item = (String)adapterView.getItemAtPosition(i);
+                if(exhibitList.contains(item) == true) {
+                    return;
+                }
+                exhibitList.add(item);
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -56,9 +81,12 @@ public class MainActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
 
                 arrayAdapter.getFilter().filter(newText);
+
                 return false;
             }
+
         });
+
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -76,5 +104,4 @@ public class MainActivity extends AppCompatActivity {
 
         return names;
     }
-
 }
