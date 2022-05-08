@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     //button function start
     Button planButton;
+    TextView countView;
     //button function end
     ListView listView;
     String[] exhibitNames;
@@ -48,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         //button function start
         planButton = findViewById(R.id.plan_btn);
         planButton.setOnClickListener(this::onPlanClicked);
+        countView = findViewById(R.id.exhibit_count);
+        countView.setText("0");
         //button function end
 
         // new:
@@ -65,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 exhibitList.add(item);
+                String number = Integer.toString(exhibitList.size());
+                countView.setText(number);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -117,5 +123,6 @@ public class MainActivity extends AppCompatActivity {
     void onPlanClicked(View view) {
         exhibitList.clear();
         adapter.notifyDataSetChanged();
+        countView.setText("0");
     }
 }
