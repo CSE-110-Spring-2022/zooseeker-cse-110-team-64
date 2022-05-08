@@ -83,10 +83,10 @@ public class SearchBarTests {
                                                 1)),
                                 0),
                         isDisplayed()));
-        searchAutoComplete.perform(replaceText("en"), closeSoftKeyboard());
+        searchAutoComplete.perform(replaceText("sn"), closeSoftKeyboard());
 
         ViewInteraction searchAutoComplete2 = onView(
-                allOf(withId(androidx.appcompat.R.id.search_src_text), withText("en"),
+                allOf(withId(androidx.appcompat.R.id.search_src_text), withText("sn"),
                         childAtPosition(
                                 allOf(withId(androidx.appcompat.R.id.search_plate),
                                         childAtPosition(
@@ -114,18 +114,18 @@ public class SearchBarTests {
 
         // Test if search results texts match expectation.
         ViewInteraction textView = onView(
-                allOf(withId(android.R.id.text1), withText("Entrance Plaza"),
+                allOf(withId(android.R.id.text1), withText("Snake"),
                         withParent(allOf(withId(R.id.list),
                                 withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
                         isDisplayed()));
-        textView.check(matches(withText("Entrance Plaza")));
+        textView.check(matches(withText("Snake")));
 
         ViewInteraction textView2 = onView(
-                allOf(withId(android.R.id.text1), withText("Entrance and Exit Gate"),
+                allOf(withId(android.R.id.text1), withText("Sneasel"),
                         withParent(allOf(withId(R.id.list),
                                 withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
                         isDisplayed()));
-        textView2.check(matches(withText("Entrance and Exit Gate")));
+        textView2.check(matches(withText("Sneasel")));
 
     }
 
@@ -152,10 +152,10 @@ public class SearchBarTests {
                                                 1)),
                                 0),
                         isDisplayed()));
-        searchAutoComplete.perform(replaceText("lions"), closeSoftKeyboard());
+        searchAutoComplete.perform(replaceText("dog"), closeSoftKeyboard());
 
         ViewInteraction searchAutoComplete2 = onView(
-                allOf(withId(androidx.appcompat.R.id.search_src_text), withText("lions"),
+                allOf(withId(androidx.appcompat.R.id.search_src_text), withText("dog"),
                         childAtPosition(
                                 allOf(withId(androidx.appcompat.R.id.search_plate),
                                         childAtPosition(
@@ -183,66 +183,13 @@ public class SearchBarTests {
 
         // Test if search results texts match expectation.
         ViewInteraction textView = onView(
-                allOf(withId(android.R.id.text1), withText("Lions"),
+                allOf(withId(android.R.id.text1), withText("Dog"),
                         withParent(allOf(withId(R.id.list),
                                 withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
                         isDisplayed()));
-        textView.check(matches(withText("Lions")));
+        textView.check(matches(withText("Dog")));
 
 
-    }
-
-    // Espresso test for testing searching for keyword that has no result in the database.
-    @Test
-    public void testSearchingForKeywordWithNoResult() {
-
-        ViewInteraction actionMenuItemView = onView(
-                allOf(withId(R.id.search), withContentDescription("Search"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(androidx.appcompat.R.id.action_bar),
-                                        1),
-                                0),
-                        isDisplayed()));
-        actionMenuItemView.perform(click());
-
-        ViewInteraction searchAutoComplete = onView(
-                allOf(withId(androidx.appcompat.R.id.search_src_text),
-                        childAtPosition(
-                                allOf(withId(androidx.appcompat.R.id.search_plate),
-                                        childAtPosition(
-                                                withId(androidx.appcompat.R.id.search_edit_frame),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        searchAutoComplete.perform(replaceText("jaghsdbhjabkf"), closeSoftKeyboard());
-
-        ViewInteraction searchAutoComplete2 = onView(
-                allOf(withId(androidx.appcompat.R.id.search_src_text), withText("jaghsdbhjabkf"),
-                        childAtPosition(
-                                allOf(withId(androidx.appcompat.R.id.search_plate),
-                                        childAtPosition(
-                                                withId(androidx.appcompat.R.id.search_edit_frame),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        searchAutoComplete2.perform(pressImeActionButton());
-
-
-        // Test if the results count matches expectation.
-        final int count = 0;
-        onView(withId(R.id.list)).check(matches(new TypeSafeMatcher<View>() {
-            @Override
-            public boolean matchesSafely(View view) {
-                ListView listView = (ListView) view;
-                return count == listView.getCount();
-            }
-
-            @Override
-            public void describeTo(Description description) {
-
-            }
-        }));
     }
 
     private static Matcher<View> childAtPosition(
