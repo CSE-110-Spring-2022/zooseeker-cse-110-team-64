@@ -6,21 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".navigation_page">
 
-    <TextView
-        android:id="@+id/navigation"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="188dp"
-        android:layout_marginEnd="16dp"
-        android:gravity="center"
-        android:hint="next?"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <Button
         android:id="@+id/previous_btn"
         android:layout_width="108dp"
@@ -50,10 +35,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:text="Turn Left"
+        android:text="Turn Left \non Africa Rocks Street"
         android:textAlignment="center"
         android:textSize="36dp"
+        app:layout_constraintBottom_toTopOf="@+id/previous_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="302dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
