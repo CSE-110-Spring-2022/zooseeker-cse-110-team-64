@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".navigation_page">
+    tools:context=".NavigationPageActivity">
 
     <Button
         android:id="@+id/previous_btn"
@@ -13,6 +13,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginBottom="43dp"
         android:backgroundTint="#8BC34A"
+        android:onClick="onPreviousBtnClicked"
         android:text="PREVIOUS"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -23,6 +24,7 @@
         android:layout_height="48dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="43dp"
+        android:onClick="onNextBtnClicked"
         android:text="NEXT"
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
