@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
         for(String str : exhibitList) {
             idList.add(idAndNameMap.get(str));
         }
-
+        //After sorted
         sortedList = sortByDistance(idList);
         String output = "";
         for(String str : sortedList.keySet()) {
@@ -224,8 +224,6 @@ public class MainActivity extends AppCompatActivity {
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
         displayPlan = popupView.findViewById(R.id.plan_text);
         displayPlan.setText(output);
-        // show the popup window
-        // which view you pass in doesn't matter, it is only used for the window tolken
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
     }
