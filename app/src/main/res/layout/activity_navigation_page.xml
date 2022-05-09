@@ -4,30 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".navigation_page">
-
-    <TextView
-        android:id="@+id/navigation"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="188dp"
-        android:layout_marginEnd="16dp"
-        android:gravity="center"
-        android:hint="next?"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    tools:context=".NavigationPageActivity">
 
     <Button
         android:id="@+id/previous_btn"
-        android:layout_width="108dp"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="43dp"
         android:backgroundTint="#8BC34A"
+        android:onClick="onPreviousBtnClicked"
         android:text="PREVIOUS"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -38,9 +24,30 @@
         android:layout_height="48dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="43dp"
+        android:onClick="onNextBtnClicked"
         android:text="NEXT"
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:backgroundTint="#8BC34A" />
+        tools:backgroundTint="#8BC34A"
+        android:layout_width="wrap_content" />
+
+    <ListView
+        android:id="@+id/direction_listView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="200dp"
+        android:foregroundGravity="center"
+        android:text="Turn Left \non Africa Rocks Street"
+        android:textAlignment="center"
+        android:textSize="36dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

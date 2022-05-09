@@ -130,6 +130,11 @@ public class MainActivity extends AppCompatActivity {
         return sortedMap;
     }
 
+    public void onStartDirectionClicked(View view) {
+        Intent intent = new Intent(this, NavigationPageActivity.class);
+        startActivity(intent);
+    }
+
     class ValueComparator implements Comparator<String> {
         Map<String, Double> base;
 
@@ -168,9 +173,7 @@ public class MainActivity extends AppCompatActivity {
 
                 return false;
             }
-
         });
-
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -225,6 +228,5 @@ public class MainActivity extends AppCompatActivity {
         displayPlan = popupView.findViewById(R.id.plan_text);
         displayPlan.setText(output);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-
     }
 }
