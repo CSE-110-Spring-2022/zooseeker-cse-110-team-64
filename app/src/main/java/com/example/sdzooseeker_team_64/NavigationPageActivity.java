@@ -22,10 +22,14 @@ public class NavigationPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_page);
 
+        currentExhibitIndex = 0;
+        exhibitsList.add("String1");
+        exhibitsList.add("String2");
+        directionTextView = findViewById(R.id.direction_textView);
+
         // Set up direction text view for the first exhibit on the sorted list
         // Get the direction text for previous exhibit
         String firstDirectionText = "Set direction text for the first exhibit on the sorted list";
-        directionTextView = findViewById(R.id.direction_textView);
         directionTextView.setText(firstDirectionText);
 
         // Prepare for buttons
@@ -41,13 +45,14 @@ public class NavigationPageActivity extends AppCompatActivity {
 
         // Show direction for the previous exhibit on the sorted list
         directionTextView.setText(directionText);
+        currentExhibitIndex--;
         updateButtonStates();
     }
 
     public void onNextBtnClicked(View view) {
         if (isAtLastExhibit()) {
             // The button should finish and dismiss the direction avtivity.
-
+            finish();
         } else {
             // Get the direction text for previous exhibit
 
@@ -56,7 +61,7 @@ public class NavigationPageActivity extends AppCompatActivity {
             // Show direction for the next exhibit on the sorted list
             directionTextView.setText(directionText);
         }
-
+        currentExhibitIndex++;
         updateButtonStates();
     }
 
@@ -85,7 +90,7 @@ public class NavigationPageActivity extends AppCompatActivity {
     }
 
     private boolean isAtLastExhibit() {
-        return currentExhibitIndex == exhibitsList.size() - 1;
+        return currentExhibitIndex >= exhibitsList.size() - 1;
     }
 
 }
