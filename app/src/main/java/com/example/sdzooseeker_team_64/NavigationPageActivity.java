@@ -1,36 +1,62 @@
 package com.example.sdzooseeker_team_64;
 
+import static android.content.ContentValues.TAG;
+
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.jgrapht.Graph;
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class NavigationPageActivity extends AppCompatActivity {
     private int currentExhibitIndex = 0;
     private ArrayList<String> exhibitsList = new ArrayList<>();
+    ArrayAdapter<String> adapter;
 
-    private TextView directionTextView;
+    private ListView listView;
     private Button prevButton;
     private Button nextButton;
 
+    private String edgeFile = "sample_edge_info.json";
+    private String graphFile = "sample_zoo_graph.json";
+    private String nodeFile = "sample_node_info.json";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_page);
 
         currentExhibitIndex = 0;
-        exhibitsList.add("String1");
-        exhibitsList.add("String2");
-        directionTextView = findViewById(R.id.direction_textView);
+        exhibitsList.add("elephant_odyssey");
+        exhibitsList.add("arctic_foxes");
+        listView = findViewById(R.id.direction_listView);
 
-        // Set up direction text view for the first exhibit on the sorted list
-        // Get the direction text for previous exhibit
-        String firstDirectionText = "Set direction text for the first exhibit on the sorted list";
-        directionTextView.setText(firstDirectionText);
+        //Todo convert exhibitList string to ID
+        if (exhibitsList.size() >= 2) {
+            ArrayList<String> paths = getExhibitPaths(exhibitsList.get(0),exhibitsList.get(1), edgeFile, graphFile);
+
+            adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_list_item_1, paths);
+            listView.setAdapter(adapter);
+            currentExhibitIndex++;
+        }
 
         // Prepare for buttons
         prevButton = findViewById(R.id.previous_btn);
@@ -41,10 +67,16 @@ public class NavigationPageActivity extends AppCompatActivity {
     public void onPreviousBtnClicked(View view) {
         // Get the direction text for previous exhibit
 
-        String directionText = "Set direction text for the previous exhibit on the sorted list";
+        if (isAtFirstExhibit()) {
+            return;
+        }
 
-        // Show direction for the previous exhibit on the sorted list
-        directionTextView.setText(directionText);
+        ArrayList<String> paths = getExhibitPaths(exhibitsList.get(currentExhibitIndex),exhibitsList.get(currentExhibitIndex-1), edgeFile, graphFile);
+
+        adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, paths);
+        listView.setAdapter(adapter);
+
         currentExhibitIndex--;
         updateButtonStates();
     }
@@ -54,12 +86,11 @@ public class NavigationPageActivity extends AppCompatActivity {
             // The button should finish and dismiss the direction avtivity.
             finish();
         } else {
-            // Get the direction text for previous exhibit
+            ArrayList<String> paths = getExhibitPaths(exhibitsList.get(currentExhibitIndex),exhibitsList.get(currentExhibitIndex + 1), edgeFile, graphFile);
 
-            String directionText = "Set direction text for the next exhibit on the sorted list";
-
-            // Show direction for the next exhibit on the sorted list
-            directionTextView.setText(directionText);
+            adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_list_item_1, paths);
+            listView.setAdapter(adapter);
         }
         currentExhibitIndex++;
         updateButtonStates();
@@ -93,4 +124,37 @@ public class NavigationPageActivity extends AppCompatActivity {
         return currentExhibitIndex >= exhibitsList.size() - 1;
     }
 
+    private ArrayList<String> getExhibitPaths(String startId, String endId, String edgeFile, String graphFile) {
+        String start = startId;
+        String goal = endId;
+
+        ArrayList<String> exhibitPaths = new ArrayList<>();
+
+        // 1. Load the graph...
+        Graph<String, IdentifiedWeightedEdge> g = ZooData.loadZooGraphJSON(this, graphFile);
+        GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g, start, goal);
+
+        // 2. Load the information about our nodes and edges...
+        Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(this, edgeFile);
+
+        System.out.printf("The shortest path from '%s' to '%s' is:\n", start, goal);
+
+        for (IdentifiedWeightedEdge e : path.getEdgeList()) {
+            exhibitPaths.add(eInfo.get(e.getId()).street);
+        }
+        return exhibitPaths;
+    }
+
+    private Map<String, String> namesToId(String fileName) {
+
+        Map<String, String> converted = new HashMap<>();
+
+        Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this, fileName);
+
+        for(String key : vInfo.keySet()) {
+            String name = Objects.requireNonNull(vInfo.get(key)).name;
+            converted.put(name, key);
+        }
+        return converted;
+    }
 }
