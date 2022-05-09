@@ -130,6 +130,11 @@ public class MainActivity extends AppCompatActivity {
         return sortedMap;
     }
 
+    public void onStartDirectionClicked(View view) {
+        Intent intent = new Intent(this, NavigationPageActivity.class);
+        startActivity(intent);
+    }
+
     class ValueComparator implements Comparator<String> {
         Map<String, Double> base;
 

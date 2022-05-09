@@ -123,11 +123,11 @@ public class StartDirectionTests {
                         isDisplayed()));
         materialButton.perform(click());
 
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.direction_textView), withText("Set direction text for the first exhibit on the sorted list"),
-                        withParent(withParent(withId(android.R.id.content))),
-                        isDisplayed()));
-        textView.check(matches(isDisplayed()));
+//        ViewInteraction textView = onView(
+//                allOf(withId(R.id.direction_textView), withText("Set direction text for the first exhibit on the sorted list"),
+//                        withParent(withParent(withId(android.R.id.content))),
+//                        isDisplayed()));
+//        textView.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(
