@@ -13,32 +13,25 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Serializable {
 
     //new:
     ArrayList<String> exhibitList = new ArrayList<String>();
@@ -60,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
     ListView listView;
     String[] exhibitNames;
     ArrayAdapter<String> arrayAdapter;
+
+    //Tech's for serialize
+    ArrayList<String> sorted_IDs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onStartDirectionClicked(View view) {
         Intent intent = new Intent(this, NavigationPageActivity.class);
+        serializeSortedId(intent);
         startActivity(intent);
     }
 
@@ -213,14 +210,16 @@ public class MainActivity extends AppCompatActivity {
             idList.add(idAndNameMap.get(str));
         }
         //After sorted
+        // TODO: should this be Exhibit name -> distance?
         sortedList = sortByDistance(idList);
         String output = "";
         for(String str : sortedList.keySet()) {
             output += str;
             output += ": ";
             output += sortedList.get(str);
-            output += "\n";
+            output += "m\n";
         }
+        //end
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
         boolean focusable = true;
@@ -228,5 +227,13 @@ public class MainActivity extends AppCompatActivity {
         displayPlan = popupView.findViewById(R.id.plan_text);
         displayPlan.setText(output);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+    }
+
+    private void serializeSortedId(Intent i){
+        sorted_IDs = new ArrayList<String>();
+        for(String id: sortedList.keySet()){
+            sorted_IDs.add(id);
+        }
+        i.putExtra("Sorted IDs", sorted_IDs);
     }
 }
