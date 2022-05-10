@@ -169,9 +169,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             // filter text when search box content changes
             @Override
             public boolean onQueryTextChange(String newText) {
-
                 arrayAdapter.getFilter().filter(newText);
-
                 return false;
             }
         });
@@ -211,7 +209,6 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     void onPlanClicked(View view) {
         LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.popup, null);
-
 
         for(String str : exhibitList) {
             idList.add(idAndNameMap.get(str));
