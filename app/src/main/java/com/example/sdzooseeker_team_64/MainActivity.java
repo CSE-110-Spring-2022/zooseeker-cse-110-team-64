@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     //button function start
     Button planButton;
     TextView countView;
+    Button startButton;
     //button function end
 
     //find distance function
@@ -74,6 +75,9 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         planButton.setOnClickListener(this::onPlanClicked);
         countView = findViewById(R.id.exhibit_count);
         countView.setText("0");
+
+        startButton = findViewById(R.id.start_btn);
+        startButton.setAlpha(0);
         //button function end
 
         //Plan Button function
@@ -230,6 +234,9 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         displayPlan = popupView.findViewById(R.id.plan_text);
         displayPlan.setText(output);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+        if(sortedList.size() > 0) {
+            startButton.setAlpha(1);
+        }
     }
 
     private void serializeSortedId(Intent i){
