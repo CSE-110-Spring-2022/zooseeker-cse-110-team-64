@@ -181,7 +181,10 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         ArrayList<String> exhibitNames = new ArrayList<>();
         for(String key : vInfo.keySet()) {
             String name = Objects.requireNonNull(vInfo.get(key)).name;
-            exhibitNames.add(name);
+
+            //Tech: remove entrance from list
+            if(name.compareTo("Entrance and Exit Gate") != 0)
+                exhibitNames.add(name);
         }
         String[] names = new String[exhibitNames.size()];
         names = exhibitNames.toArray(names);
