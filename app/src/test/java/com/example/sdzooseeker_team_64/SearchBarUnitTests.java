@@ -28,7 +28,7 @@ public class SearchBarUnitTests {
     public void testLoadingDatabaseFromExistingFile() {
         Context context = ApplicationProvider.getApplicationContext();
         String[] exhibitNames = MainActivity.loadMapFromAssets(context, "sample_node_info.json");
-        assertEquals(exhibitNames.length, 7);
+        assertEquals(6, exhibitNames.length);
     }
 
 }

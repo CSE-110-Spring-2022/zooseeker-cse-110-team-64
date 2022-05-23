@@ -1,15 +1,11 @@
 package com.example.sdzooseeker_team_64;
 
-import static android.content.ContentValues.TAG;
-
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,7 +13,6 @@ import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,16 +34,17 @@ public class NavigationPageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_page);
 
         currentExhibitIndex = 0;
-        exhibitsList.add("elephant_odyssey");
-        exhibitsList.add("arctic_foxes");
+        exhibitsList.add("entrance_exit_gate");
         listView = findViewById(R.id.direction_listView);
 
         //Todo convert exhibitList string to ID
+        Intent i = getIntent();
+        exhibitsList.addAll((ArrayList<String>) i.getSerializableExtra("Sorted IDs"));
+
         if (exhibitsList.size() >= 2) {
             ArrayList<String> paths = getExhibitPaths(exhibitsList.get(0),exhibitsList.get(1), edgeFile, graphFile);
 
