@@ -30,9 +30,11 @@ android {
             includeAndroidResources = true
         }
     }
+    namespace 'com.example.sdzooseeker_team_64'
 }
 
 dependencies {
+    implementation 'androidx.preference:preference:1.1.1'
     androidTestImplementation 'androidx.test:rules:1.4.0'
 
     //start here: adding Google's GSON and ROOM
