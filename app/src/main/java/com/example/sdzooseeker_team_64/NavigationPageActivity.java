@@ -31,7 +31,7 @@ public class NavigationPageActivity extends AppCompatActivity {
 
     private String edgeFile = "sample_edge_info.json";
     private String graphFile = "sample_zoo_graph.json";
-    private String nodeFile = "sample_node_info.json";
+    private String nodeFile = "sample_vertex_info.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
