@@ -154,4 +154,10 @@ public class NavigationPageActivity extends AppCompatActivity {
         }
         return converted;
     }
+
+    public void onSettingsClicked(View view) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
 }
