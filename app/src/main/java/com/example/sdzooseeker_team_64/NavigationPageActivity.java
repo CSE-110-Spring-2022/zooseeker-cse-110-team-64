@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Switch;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,6 +27,7 @@ public class NavigationPageActivity extends AppCompatActivity {
     private ListView listView;
     private Button prevButton;
     private Button nextButton;
+    private Switch directionSwitch;
 
     private String edgeFile = "sample_edge_info.json";
     private String graphFile = "sample_zoo_graph.json";
@@ -57,6 +59,8 @@ public class NavigationPageActivity extends AppCompatActivity {
         // Prepare for buttons
         prevButton = findViewById(R.id.previous_btn);
         nextButton = findViewById(R.id.next_btn);
+        directionSwitch = findViewById(R.id.direction_switch);
+
         updateButtonStates();
     }
 
@@ -154,9 +158,23 @@ public class NavigationPageActivity extends AppCompatActivity {
         return converted;
     }
 
-    public void onSettingsClicked(View view) {
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
-    }
+    public void directionOnClicked(View view) {
+        ArrayList<String> briefPath = new ArrayList<>();
+        ArrayList<String> detailedPath = new ArrayList<>();
 
+        briefPath.add("brief");
+        detailedPath.add("detailed");
+
+        if(!directionSwitch.isChecked()){
+            adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_list_item_1, briefPath);
+        }
+
+        else{
+            adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_list_item_1, detailedPath);
+        }
+
+        listView.setAdapter(adapter);
+    }
 }
