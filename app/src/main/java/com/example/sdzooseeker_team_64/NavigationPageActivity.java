@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Switch;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,11 +21,14 @@ import java.util.Map;
 import java.util.Objects;
 
 public class NavigationPageActivity extends AppCompatActivity {
-    private int currentExhibitIndex = 0;
+    private int startExhibitIndex = 0;
+    private int endExhibitIndex = 1;
     private ArrayList<String> exhibitsList = new ArrayList<>();
     ArrayAdapter<String> adapter;
 
     private ListView listView;
+    private TextView startExhibitTextView;
+    private TextView endExhibitTextView;
     private Button prevButton;
     private Button nextButton;
     private Switch directionSwitch;
@@ -39,21 +43,27 @@ public class NavigationPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_page);
 
-        currentExhibitIndex = 0;
         exhibitsList.add("entrance_exit_gate");
+
+        // Prepare for UI
         listView = findViewById(R.id.direction_listView);
+        startExhibitTextView = findViewById(R.id.startExhibitTextView);
+        endExhibitTextView = findViewById(R.id.endExhibitTextView);
 
         //Todo convert exhibitList string to ID
         Intent i = getIntent();
         exhibitsList.addAll((ArrayList<String>) i.getSerializableExtra("Sorted IDs"));
 
         if (exhibitsList.size() >= 2) {
-            ArrayList<String> paths = getExhibitPaths(exhibitsList.get(0),exhibitsList.get(1), edgeFile, graphFile);
+            // Set up from/to UI
+            startExhibitTextView.setText(exhibitsList.get(startExhibitIndex));
+            endExhibitTextView.setText(exhibitsList.get(endExhibitIndex));
+            ArrayList<String> paths = getExhibitPaths(exhibitsList.get(startExhibitIndex),exhibitsList.get(endExhibitIndex), edgeFile, graphFile);
 
             adapter = new ArrayAdapter<String>(this,
                     android.R.layout.simple_list_item_1, paths);
             listView.setAdapter(adapter);
-            currentExhibitIndex++;
+            startExhibitIndex++;
         }
 
         // Prepare for buttons
@@ -71,13 +81,18 @@ public class NavigationPageActivity extends AppCompatActivity {
             return;
         }
 
-        ArrayList<String> paths = getExhibitPaths(exhibitsList.get(currentExhibitIndex),exhibitsList.get(currentExhibitIndex-1), edgeFile, graphFile);
+        // Set up from/to UI
+        endExhibitIndex = startExhibitIndex - 1;
+        startExhibitTextView.setText(exhibitsList.get(startExhibitIndex));
+        endExhibitTextView.setText(exhibitsList.get(endExhibitIndex));
+
+        ArrayList<String> paths = getExhibitPaths(exhibitsList.get(startExhibitIndex),exhibitsList.get(endExhibitIndex), edgeFile, graphFile);
 
         adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, paths);
         listView.setAdapter(adapter);
 
-        currentExhibitIndex--;
+        startExhibitIndex--;
         updateButtonStates();
     }
 
@@ -86,13 +101,18 @@ public class NavigationPageActivity extends AppCompatActivity {
             // The button should finish and dismiss the direction avtivity.
             finish();
         } else {
-            ArrayList<String> paths = getExhibitPaths(exhibitsList.get(currentExhibitIndex),exhibitsList.get(currentExhibitIndex + 1), edgeFile, graphFile);
+            // Set up from/to UI
+            endExhibitIndex = startExhibitIndex + 1;
+            startExhibitTextView.setText(exhibitsList.get(startExhibitIndex));
+            endExhibitTextView.setText(exhibitsList.get(endExhibitIndex));
+
+            ArrayList<String> paths = getExhibitPaths(exhibitsList.get(startExhibitIndex),exhibitsList.get(endExhibitIndex), edgeFile, graphFile);
 
             adapter = new ArrayAdapter<String>(this,
                     android.R.layout.simple_list_item_1, paths);
             listView.setAdapter(adapter);
         }
-        currentExhibitIndex++;
+        startExhibitIndex++;
         updateButtonStates();
     }
 
@@ -117,11 +137,11 @@ public class NavigationPageActivity extends AppCompatActivity {
     }
 
     private boolean isAtFirstExhibit() {
-        return currentExhibitIndex == 0;
+        return startExhibitIndex == 0;
     }
 
     private boolean isAtLastExhibit() {
-        return currentExhibitIndex >= exhibitsList.size() - 1;
+        return startExhibitIndex >= exhibitsList.size() - 1;
     }
 
     private ArrayList<String> getExhibitPaths(String startId, String endId, String edgeFile, String graphFile) {
