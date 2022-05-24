@@ -50,4 +50,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/skip_btn"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="53dp"
+        android:layout_marginBottom="43dp"
+        android:background="@drawable/button_states"
+        android:backgroundTint="#c71c1c"
+        android:text="SKIP"
+        android:textColor="@color/white"
+        android:textSize="19dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/next_btn"
+        app:layout_constraintStart_toEndOf="@+id/previous_btn" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
