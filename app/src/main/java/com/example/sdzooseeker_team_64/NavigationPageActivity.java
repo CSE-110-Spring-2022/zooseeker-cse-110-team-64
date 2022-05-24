@@ -46,6 +46,7 @@ public class NavigationPageActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_page);
+        setTitle("Direction");
 
         exhibitsList.add("entrance_exit_gate");
 
