@@ -179,15 +179,14 @@ public class NavigationPageActivity extends AppCompatActivity {
     }
 
     public void directionOnClicked(View view) {
-        ArrayList<String> briefPath = new ArrayList<>();
         ArrayList<String> detailedPath = new ArrayList<>();
 
-        briefPath.add("brief");
-        detailedPath.add("detailed");
+        // TODO test
+        detailedPath = getDetailedPath("entrance_exit_gate", "hippo", nodeFile, edgeFile, graphFile);
 
         if(!directionSwitch.isChecked()){
             adapter = new ArrayAdapter<String>(this,
-                    android.R.layout.simple_list_item_1, briefPath);
+                    android.R.layout.simple_list_item_1, detailedPath);
         }
 
         else{
@@ -196,5 +195,42 @@ public class NavigationPageActivity extends AppCompatActivity {
         }
 
         listView.setAdapter(adapter);
+    }
+
+    public ArrayList<String> getDetailedPath(String startId, String endId, String vertexFile, String edgeFile, String graphFile){
+        ArrayList<String> detailedPath = new ArrayList<>();
+
+        String start = startId;
+        String goal = endId;
+
+        // 1. Load the graph...
+        Graph<String, IdentifiedWeightedEdge> g = ZooData.loadZooGraphJSON(this, graphFile);
+        GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g, start, goal);
+
+        // 2. Load the information about our nodes and edges...
+        Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this, vertexFile);
+        Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(this, edgeFile);
+
+        /*
+        for (IdentifiedWeightedEdge e : path.getEdgeList()) {
+            detailedPath.add("  %d. Walk %.0f meters along %s from '%s' to '%s'.\n",
+                    g.getEdgeWeight(e),
+                    eInfo.get(e.getId()).street,
+                    vInfo.get(g.getEdgeSource(e).toString()).name,
+                    vInfo.get(g.getEdgeTarget(e).toString()).name);
+        }*/
+
+        for (IdentifiedWeightedEdge e: path.getEdgeList()){
+            String p1 = vInfo.get(g.getEdgeSource(e).toString()).name;
+            String p2 = vInfo.get(g.getEdgeTarget(e).toString()).name;
+            double eWeight = g.getEdgeWeight(e);
+
+            detailedPath.add(
+                    "Proceed on " +
+                    p1 + " " + eWeight +
+                    " ft towards " + p2
+            );
+        }
+        return detailedPath;
     }
 }
