@@ -34,6 +34,10 @@ public class NavigationPageActivity extends AppCompatActivity {
     private Button nextButton;
     private Switch directionSwitch;
 
+    // detailed and brief path
+    ArrayList<String> detailedPath;
+    ArrayList<String> briefPath;
+
     private String edgeFile = "sample_edge_info.json";
     private String graphFile = "sample_zoo_graph.json";
     private String nodeFile = "sample_vertex_info.json";
@@ -51,18 +55,29 @@ public class NavigationPageActivity extends AppCompatActivity {
         startExhibitTextView = findViewById(R.id.startExhibitTextView);
         endExhibitTextView = findViewById(R.id.endExhibitTextView);
 
-        //Todo convert exhibitList string to ID
+        //convert exhibitList string to ID
         Intent i = getIntent();
         exhibitsList.addAll((ArrayList<String>) i.getSerializableExtra("Sorted IDs"));
 
+        // setup detailed and brief path
+        detailedPath = new ArrayList<>();
+        briefPath = new ArrayList<>();
+
         if (exhibitsList.size() >= 2) {
             // Set up from/to UI
-            startExhibitTextView.setText(exhibitsList.get(startExhibitIndex));
-            endExhibitTextView.setText(exhibitsList.get(endExhibitIndex));
-            ArrayList<String> paths = getExhibitPaths(exhibitsList.get(startExhibitIndex),exhibitsList.get(endExhibitIndex), edgeFile, graphFile);
+            String startId = exhibitsList.get(startExhibitIndex);
+            String endId = exhibitsList.get(endExhibitIndex);
+
+            Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this, nodeFile);
+
+            startExhibitTextView.setText(vInfo.get(startId).name);
+            endExhibitTextView.setText(vInfo.get(endId).name);
+
+            detailedPath = getDetailedPath(startId, endId, nodeFile, edgeFile, graphFile);
+            briefPath = getBriefPath(startId, endId, nodeFile, edgeFile, graphFile);
 
             adapter = new ArrayAdapter<String>(this,
-                    android.R.layout.simple_list_item_1, paths);
+                    android.R.layout.simple_list_item_1, briefPath);
             listView.setAdapter(adapter);
             startExhibitIndex++;
         }
@@ -84,13 +99,27 @@ public class NavigationPageActivity extends AppCompatActivity {
 
         // Set up from/to UI
         endExhibitIndex = startExhibitIndex - 1;
-        startExhibitTextView.setText(exhibitsList.get(startExhibitIndex));
-        endExhibitTextView.setText(exhibitsList.get(endExhibitIndex));
 
-        ArrayList<String> paths = getExhibitPaths(exhibitsList.get(startExhibitIndex),exhibitsList.get(endExhibitIndex), edgeFile, graphFile);
+        String startId = exhibitsList.get(startExhibitIndex);
+        String endId = exhibitsList.get(endExhibitIndex);
 
-        adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, paths);
+        Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this, nodeFile);
+        startExhibitTextView.setText(vInfo.get(startId).name);
+        endExhibitTextView.setText(vInfo.get(endId).name);
+
+        detailedPath = getDetailedPath(startId, endId, nodeFile, edgeFile, graphFile);
+        briefPath = getBriefPath(startId, endId, nodeFile, edgeFile, graphFile);
+
+        if(!directionSwitch.isChecked()){
+            adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_list_item_1, briefPath);
+        }
+
+        else{
+            adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_list_item_1, detailedPath);
+        }
+
         listView.setAdapter(adapter);
 
         startExhibitIndex--;
@@ -104,13 +133,27 @@ public class NavigationPageActivity extends AppCompatActivity {
         } else {
             // Set up from/to UI
             endExhibitIndex = startExhibitIndex + 1;
-            startExhibitTextView.setText(exhibitsList.get(startExhibitIndex));
-            endExhibitTextView.setText(exhibitsList.get(endExhibitIndex));
 
-            ArrayList<String> paths = getExhibitPaths(exhibitsList.get(startExhibitIndex),exhibitsList.get(endExhibitIndex), edgeFile, graphFile);
+            String startId = exhibitsList.get(startExhibitIndex);
+            String endId = exhibitsList.get(endExhibitIndex);
 
-            adapter = new ArrayAdapter<String>(this,
-                    android.R.layout.simple_list_item_1, paths);
+            Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this, nodeFile);
+            startExhibitTextView.setText(vInfo.get(startId).name);
+            endExhibitTextView.setText(vInfo.get(endId).name);
+
+            detailedPath = getDetailedPath(startId, endId, nodeFile, edgeFile, graphFile);
+            briefPath = getBriefPath(startId, endId, nodeFile, edgeFile, graphFile);
+
+            if(!directionSwitch.isChecked()){
+                adapter = new ArrayAdapter<String>(this,
+                        android.R.layout.simple_list_item_1, briefPath);
+            }
+
+            else{
+                adapter = new ArrayAdapter<String>(this,
+                        android.R.layout.simple_list_item_1, detailedPath);
+            }
+
             listView.setAdapter(adapter);
         }
         startExhibitIndex++;
@@ -145,27 +188,6 @@ public class NavigationPageActivity extends AppCompatActivity {
         return startExhibitIndex >= exhibitsList.size() - 1;
     }
 
-    private ArrayList<String> getExhibitPaths(String startId, String endId, String edgeFile, String graphFile) {
-        String start = startId;
-        String goal = endId;
-
-        ArrayList<String> exhibitPaths = new ArrayList<>();
-
-        // 1. Load the graph...
-        Graph<String, IdentifiedWeightedEdge> g = ZooData.loadZooGraphJSON(this, graphFile);
-        GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g, start, goal);
-
-        // 2. Load the information about our nodes and edges...
-        Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(this, edgeFile);
-
-        System.out.printf("The shortest path from '%s' to '%s' is:\n", start, goal);
-
-        for (IdentifiedWeightedEdge e : path.getEdgeList()) {
-            exhibitPaths.add(eInfo.get(e.getId()).street);
-        }
-        return exhibitPaths;
-    }
-
     private Map<String, String> namesToId(String fileName) {
 
         Map<String, String> converted = new HashMap<>();
@@ -180,13 +202,6 @@ public class NavigationPageActivity extends AppCompatActivity {
     }
 
     public void directionOnClicked(View view) {
-        // TODO test
-        ArrayList<String> detailedPath = new ArrayList<>();
-        ArrayList<String> briefPath = new ArrayList<>();
-
-        detailedPath = getDetailedPath("entrance_exit_gate", "hippo", nodeFile, edgeFile, graphFile);
-        briefPath = getBriefPath("entrance_exit_gate", "hippo", nodeFile, edgeFile, graphFile);
-
         if(!directionSwitch.isChecked()){
             adapter = new ArrayAdapter<String>(this,
                     android.R.layout.simple_list_item_1, briefPath);
@@ -416,4 +431,27 @@ public class NavigationPageActivity extends AppCompatActivity {
         }
         return briefPath;
     }
+
+
+    /* past method
+    private ArrayList<String> getExhibitPaths(String startId, String endId, String edgeFile, String graphFile) {
+        String start = startId;
+        String goal = endId;
+
+        ArrayList<String> exhibitPaths = new ArrayList<>();
+
+        // 1. Load the graph...
+        Graph<String, IdentifiedWeightedEdge> g = ZooData.loadZooGraphJSON(this, graphFile);
+        GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g, start, goal);
+
+        // 2. Load the information about our nodes and edges...
+        Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(this, edgeFile);
+
+        System.out.printf("The shortest path from '%s' to '%s' is:\n", start, goal);
+
+        for (IdentifiedWeightedEdge e : path.getEdgeList()) {
+            exhibitPaths.add(eInfo.get(e.getId()).street);
+        }
+        return exhibitPaths;
+    }*/
 }

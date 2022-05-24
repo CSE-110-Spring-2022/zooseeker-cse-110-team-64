@@ -58,6 +58,11 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     //Tech's for serialize
     ArrayList<String> sorted_IDs;
 
+    // files
+    private String edgeFile = "sample_edge_info.json";
+    private String graphFile = "sample_zoo_graph.json";
+    private String nodeFile = "sample_vertex_info.json";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -215,11 +220,12 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             idList.add(idAndNameMap.get(str));
         }
         //After sorted
-        // TODO: should this be Exhibit name -> distance?
+        Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this, nodeFile);
+
         sortedList = sortByDistance(idList);
         String output = "";
         for(String str : sortedList.keySet()) {
-            output += str;
+            output += vInfo.get(str).name;
             output += ": ";
             output += sortedList.get(str);
             output += "m\n";
