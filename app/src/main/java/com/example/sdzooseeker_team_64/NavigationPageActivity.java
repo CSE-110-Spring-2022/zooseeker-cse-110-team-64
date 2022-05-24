@@ -6,8 +6,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,7 +16,6 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -229,47 +228,27 @@ public class NavigationPageActivity extends AppCompatActivity {
         Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this, vertexFile);
         Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(this, edgeFile);
 
+        String pastStreet = "";
+
         for (IdentifiedWeightedEdge e: path.getEdgeList()){
-            String k1 = Objects.requireNonNull(vInfo.get(g.getEdgeSource(e).toString())).kind;
             String k2 = Objects.requireNonNull(vInfo.get(g.getEdgeTarget(e).toString())).kind;
-            String p1 = Objects.requireNonNull(vInfo.get(g.getEdgeSource(e).toString())).name;
             String p2 = Objects.requireNonNull(vInfo.get(g.getEdgeTarget(e).toString())).name;
 
+            String currStreet = eInfo.get(e.getId()).street;
             double eWeight = g.getEdgeWeight(e);
             String detailedDirection = "";
 
-            if(k1.compareTo("exhibit") == 0) {
-                detailedDirection =
-                        "Proceed on " +
-                        p1 + " exhibit " + eWeight +
-                        " ft towards ";
+            if (pastStreet.compareTo(currStreet) == 0){
+                detailedDirection = "Continue on " + currStreet + " "+
+                        eWeight + " ft towards ";
+            }
+            else{
+                pastStreet = currStreet;
+                detailedDirection = "Proceed on " + currStreet + " "+
+                        eWeight + " ft towards ";
             }
 
-            else if(k1.compareTo("intersection") == 0){
-                if (p1.contains(" / ")) {
-                    String[] tokens = p1.split(" / ");
-                    detailedDirection =
-                            "Proceed on corner of " +
-                                tokens[0] + " and " + tokens[1] +
-                                " " +eWeight +
-                                " ft towards ";
-                }
-                else {
-                    detailedDirection =
-                            "Proceed on " +
-                                    p1 + " " + eWeight +
-                                    " ft towards ";
-                }
-            }
-
-            else if(k1.compareTo("gate") == 0){
-                detailedDirection =
-                        "Proceed from " +
-                        p1 + " " + eWeight +
-                        " ft towards ";
-            }
-
-
+            // target location
             if(k2.compareTo("exhibit") == 0){
                 detailedDirection +=
                         p2 + " exhibit";
@@ -294,6 +273,7 @@ public class NavigationPageActivity extends AppCompatActivity {
             detailedPath.add(detailedDirection);
         }
         return detailedPath;
+
     }
 
     public ArrayList<String> getBriefPath(String startId, String endId, String vertexFile, String edgeFile, String graphFile){
@@ -310,11 +290,12 @@ public class NavigationPageActivity extends AppCompatActivity {
         Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this, vertexFile);
         Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(this, edgeFile);
 
-        ArrayList<String> pastWay = new ArrayList<>(Arrays.asList("", ""));
         double totalWeight = 0;
         String briefDirection = "";
+        String pastStreet = "";
+        String endLocation = vInfo.get(goal).name;
 
-        for (IdentifiedWeightedEdge e: path.getEdgeList()){
+        for (IdentifiedWeightedEdge e: path.getEdgeList()) {
             String k1 = Objects.requireNonNull(vInfo.get(g.getEdgeSource(e).toString())).kind;
             String k2 = Objects.requireNonNull(vInfo.get(g.getEdgeTarget(e).toString())).kind;
             String p1 = Objects.requireNonNull(vInfo.get(g.getEdgeSource(e).toString())).name;
@@ -322,116 +303,74 @@ public class NavigationPageActivity extends AppCompatActivity {
 
             double eWeight = g.getEdgeWeight(e);
             totalWeight += eWeight;
+            String currStreet = eInfo.get(e.getId()).street;
 
-            // part 1 (p1 and k1)
-            if(k1.compareTo("exhibit") == 0) {
-                briefDirection =
-                        "Proceed on " + p1 + " exhibit ";
-
-                pastWay.set(0, "");
-                pastWay.set(1, "");
+            // Starting location
+            if (pastStreet.compareTo("") == 0) {
+                pastStreet = currStreet;
+                briefDirection = "Proceed on " + currStreet + " ";
             }
 
-            else if(k1.compareTo("intersection") == 0){
-                if(p1.contains(" / ")){
-                    String[] tokens = p1.split(" / ");
-                    if(pastWay.contains("")){
-                        briefDirection = "Proceed on corner of " + tokens[0] +
-                                " and " + tokens[1] + " ";
-                        pastWay.set(0, tokens[0]);
-                        pastWay.set(1, tokens[1]);
-                    }
 
-                    else if(pastWay.contains(tokens[0]) || pastWay.contains(tokens[1])){
-                        pastWay.set(0, tokens[0]);
-                        pastWay.set(1, tokens[1]);
-                    }
 
-                    // look ahead (new proceed -> inter !-> inter)
-                    else if(!(pastWay.contains(tokens[0]) || pastWay.contains(tokens[1]))){
-                        totalWeight -= eWeight;
-                        briefDirection += totalWeight + " ft towards Corner of " + tokens[0] +
-                                " and " + tokens[1];
-                        briefPath.add(briefDirection);
+            // look ahead
+            // return end path if curr path != prev path
+            // start new path
+            if (pastStreet.compareTo(currStreet) != 0) {
+                totalWeight -= eWeight;
+                briefDirection += totalWeight + " ft towards ";
 
-                        totalWeight = eWeight;
-                        briefDirection = briefDirection = "Proceed on corner of " + tokens[0] +
-                                " and " + tokens[1] + " ";
-                        pastWay.set(0, tokens[0]);
-                        pastWay.set(1, tokens[1]);
-                    }
-                }
-                else{
-                    briefDirection = "Proceed on " + p1 + " ";
-                }
-            }
-
-            else if(k1.compareTo("gate") == 0){
-                briefDirection =
-                        "Proceed on " + p1 + " ";
-
-                pastWay.set(0, "");
-                pastWay.set(1, "");
-            }
-
-            // part 2 (p2 and k2)
-            if(k2.compareTo("exhibit") == 0){
-                briefDirection += totalWeight + " ft towards " + p2 + " exhibit";
-                totalWeight = 0;
-                briefPath.add(briefDirection);
-                pastWay.set(0, "");
-                pastWay.set(1, "");
-            }
-
-            else if(k2.compareTo("intersection") == 0){
-                if(p2.contains(" / ")){
-                    String[] tokens = p2.split(" / ");
-                    // last node
-                    if(p2.compareTo(Objects.requireNonNull(vInfo.get(goal).name)) == 0){
-                        briefDirection += totalWeight + " ft towards Corner of " + tokens[0] +
-                                " and " + tokens[1];
-                    }
-
-                    // first time seeing ("" , "")
-                    else if(pastWay.contains("")){
-                        pastWay.set(0, tokens[0]);
-                        pastWay.set(1, tokens[1]);
-                    }
-
-                    // not equal to previous (inter !-> inter)
-                    else if(!(pastWay.contains(tokens[0]) || pastWay.contains(tokens[1]))){
-                        briefDirection += totalWeight + " ft towards Corner of " + tokens[0] +
-                                " and " + tokens[1];
-                        totalWeight = 0;
-                        briefPath.add(briefDirection);
-                        pastWay.set(0, "");
-                        pastWay.set(1, "");
-                    }
-
-                    else{
-                        pastWay.set(0, tokens[0]);
-                        pastWay.set(1, tokens[1]);
-                    }
-                }
-
-                else{
-                    briefDirection += totalWeight + " ft towards " + p2;
-                    totalWeight = 0;
+                if (k1.compareTo("exhibit") == 0) {
+                    briefDirection += p1 + " exhibit";
                     briefPath.add(briefDirection);
-                    pastWay.set(0, "");
-                    pastWay.set(1, "");
                 }
-            }
 
-            else if(k2.compareTo("gate") == 0){
-                briefDirection += totalWeight + " ft towards " + p2;
-                totalWeight = 0;
+                else if (k1.compareTo("intersection") == 0) {
+                    if (p1.contains(" / ")) {
+                        String[] tokens = p1.split(" / ");
+                        briefDirection +=
+                                " corner of " + tokens[0] + " and " + tokens[1];
+                    } else {
+                        briefDirection += p1;
+                    }
+                }
+                else if (k1.compareTo("gate") == 0) {
+                    briefDirection += p1;
+                }
+
+                briefPath.add(briefDirection);
+
+                // start new Path
+                totalWeight = eWeight;
+                briefDirection = "Proceed on " + currStreet + " ";
+                pastStreet = currStreet;
+            }
+            // last location
+            if (endLocation.compareTo(p2) == 0) {
+                briefDirection += totalWeight + " ft towards ";
+                if (k2.compareTo("exhibit") == 0) {
+                    briefDirection += p2 + " exhibit";
+                    totalWeight = 0;
+                }
+                else if (k2.compareTo("intersection") == 0) {
+                    if (p2.contains(" / ")) {
+                        String[] tokens = p2.split(" / ");
+                        briefDirection +=
+                                " corner of " + tokens[0] + " and " + tokens[1];
+                    }
+                    else {
+                        briefDirection += p2;
+                    }
+                }
+                else if (k2.compareTo("gate") == 0) {
+                    briefDirection += p2;
+                }
+
                 briefPath.add(briefDirection);
             }
         }
         return briefPath;
     }
-
 
     /* past method
     private ArrayList<String> getExhibitPaths(String startId, String endId, String edgeFile, String graphFile) {
