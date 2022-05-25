@@ -73,8 +73,8 @@ public class NavigationPageActivity extends AppCompatActivity {
             startExhibitTextView.setText(vInfo.get(startId).name);
             endExhibitTextView.setText(vInfo.get(endId).name);
 
-            detailedPath = getDetailedPath(startId, endId, nodeFile, edgeFile, graphFile);
-            briefPath = getBriefPath(startId, endId, nodeFile, edgeFile, graphFile);
+            detailedPath = getDetailedPath(startId, endId,  nodeFile, edgeFile, graphFile);
+            briefPath = getBriefPath(startId, endId,  nodeFile, edgeFile, graphFile);
 
             adapter = new ArrayAdapter<String>(this,
                     android.R.layout.simple_list_item_1, briefPath);
@@ -141,8 +141,8 @@ public class NavigationPageActivity extends AppCompatActivity {
             startExhibitTextView.setText(vInfo.get(startId).name);
             endExhibitTextView.setText(vInfo.get(endId).name);
 
-            detailedPath = getDetailedPath(startId, endId, nodeFile, edgeFile, graphFile);
-            briefPath = getBriefPath(startId, endId, nodeFile, edgeFile, graphFile);
+            detailedPath = getDetailedPath(startId, endId,  nodeFile, edgeFile, graphFile);
+            briefPath = getBriefPath(startId, endId,  nodeFile, edgeFile, graphFile);
 
             if(!directionSwitch.isChecked()){
                 adapter = new ArrayAdapter<String>(this,
@@ -215,6 +215,7 @@ public class NavigationPageActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
     }
 
+    // dir == true : right, dir == false : left
     public ArrayList<String> getDetailedPath(String startId, String endId, String vertexFile, String edgeFile, String graphFile){
         ArrayList<String> detailedPath = new ArrayList<>();
 
@@ -230,10 +231,18 @@ public class NavigationPageActivity extends AppCompatActivity {
         Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(this, edgeFile);
 
         String pastStreet = "";
+        String startVertex = vInfo.get(path.getStartVertex()).name;
 
         for (IdentifiedWeightedEdge e: path.getEdgeList()){
-            String k2 = Objects.requireNonNull(vInfo.get(g.getEdgeTarget(e).toString())).kind;
-            String p2 = Objects.requireNonNull(vInfo.get(g.getEdgeTarget(e).toString())).name;
+            String k2, p2;
+                k2 = Objects.requireNonNull(vInfo.get(g.getEdgeTarget(e).toString())).kind;
+                p2 = Objects.requireNonNull(vInfo.get(g.getEdgeTarget(e).toString())).name;
+
+            if(startVertex.compareTo(p2) == 0){
+                k2 = Objects.requireNonNull(vInfo.get(g.getEdgeSource(e).toString())).kind;
+                p2 = Objects.requireNonNull(vInfo.get(g.getEdgeSource(e).toString())).name;
+            }
+            startVertex = p2;
 
             String currStreet = eInfo.get(e.getId()).street;
             double eWeight = g.getEdgeWeight(e);
@@ -267,8 +276,7 @@ public class NavigationPageActivity extends AppCompatActivity {
             }
 
             else if(k2.compareTo("gate") == 0){
-                detailedDirection +=
-                        p2;
+                detailedDirection += p2;
             }
 
             detailedPath.add(detailedDirection);
@@ -296,13 +304,27 @@ public class NavigationPageActivity extends AppCompatActivity {
         String pastStreet = "";
         String endLocation = vInfo.get(goal).name;
 
+        String startVertex = vInfo.get(path.getStartVertex()).name;
+
         for (IdentifiedWeightedEdge e: path.getEdgeList()) {
-            String k1 = Objects.requireNonNull(vInfo.get(g.getEdgeSource(e).toString())).kind;
-            String k2 = Objects.requireNonNull(vInfo.get(g.getEdgeTarget(e).toString())).kind;
-            String p1 = Objects.requireNonNull(vInfo.get(g.getEdgeSource(e).toString())).name;
-            String p2 = Objects.requireNonNull(vInfo.get(g.getEdgeTarget(e).toString())).name;
+            String k1, k2, p1, p2;
+                k1 = Objects.requireNonNull(vInfo.get(g.getEdgeSource(e).toString())).kind;
+                k2 = Objects.requireNonNull(vInfo.get(g.getEdgeTarget(e).toString())).kind;
+                p1 = Objects.requireNonNull(vInfo.get(g.getEdgeSource(e).toString())).name;
+                p2 = Objects.requireNonNull(vInfo.get(g.getEdgeTarget(e).toString())).name;
+            if(startVertex.compareTo(p1) != 0){
+                String temp;
+                temp = p1;
+                p1 = p2;
+                p2 = temp;
+                temp = k1;
+                k1 = k2;
+                k2 = temp;
+            }
+            startVertex = p2;
 
             double eWeight = g.getEdgeWeight(e);
+
             totalWeight += eWeight;
             String currStreet = eInfo.get(e.getId()).street;
 
