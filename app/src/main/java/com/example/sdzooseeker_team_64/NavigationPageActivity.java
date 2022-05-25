@@ -345,7 +345,6 @@ public class NavigationPageActivity extends AppCompatActivity {
 
                 if (k1.compareTo("exhibit") == 0) {
                     briefDirection += p1 + " exhibit";
-                    briefPath.add(briefDirection);
                 }
 
                 else if (k1.compareTo("intersection") == 0) {
