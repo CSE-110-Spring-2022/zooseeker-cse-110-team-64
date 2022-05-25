@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Switch;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,17 +21,21 @@ import java.util.Map;
 import java.util.Objects;
 
 public class NavigationPageActivity extends AppCompatActivity {
-    private int currentExhibitIndex = 0;
+    private int startExhibitIndex = 0;
+    private int endExhibitIndex = 1;
     private ArrayList<String> exhibitsList = new ArrayList<>();
     ArrayAdapter<String> adapter;
 
     private ListView listView;
+    private TextView startExhibitTextView;
+    private TextView endExhibitTextView;
     private Button prevButton;
     private Button nextButton;
+    private Switch directionSwitch;
 
     private String edgeFile = "sample_edge_info.json";
     private String graphFile = "sample_zoo_graph.json";
-    private String nodeFile = "sample_node_info.json";
+    private String nodeFile = "sample_vertex_info.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,26 +43,34 @@ public class NavigationPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_page);
 
-        currentExhibitIndex = 0;
         exhibitsList.add("entrance_exit_gate");
+
+        // Prepare for UI
         listView = findViewById(R.id.direction_listView);
+        startExhibitTextView = findViewById(R.id.startExhibitTextView);
+        endExhibitTextView = findViewById(R.id.endExhibitTextView);
 
         //Todo convert exhibitList string to ID
         Intent i = getIntent();
         exhibitsList.addAll((ArrayList<String>) i.getSerializableExtra("Sorted IDs"));
 
         if (exhibitsList.size() >= 2) {
-            ArrayList<String> paths = getExhibitPaths(exhibitsList.get(0),exhibitsList.get(1), edgeFile, graphFile);
+            // Set up from/to UI
+            startExhibitTextView.setText(exhibitsList.get(startExhibitIndex));
+            endExhibitTextView.setText(exhibitsList.get(endExhibitIndex));
+            ArrayList<String> paths = getExhibitPaths(exhibitsList.get(startExhibitIndex),exhibitsList.get(endExhibitIndex), edgeFile, graphFile);
 
             adapter = new ArrayAdapter<String>(this,
                     android.R.layout.simple_list_item_1, paths);
             listView.setAdapter(adapter);
-            currentExhibitIndex++;
+            startExhibitIndex++;
         }
 
         // Prepare for buttons
         prevButton = findViewById(R.id.previous_btn);
         nextButton = findViewById(R.id.next_btn);
+        directionSwitch = findViewById(R.id.direction_switch);
+
         updateButtonStates();
     }
 
@@ -67,13 +81,18 @@ public class NavigationPageActivity extends AppCompatActivity {
             return;
         }
 
-        ArrayList<String> paths = getExhibitPaths(exhibitsList.get(currentExhibitIndex),exhibitsList.get(currentExhibitIndex-1), edgeFile, graphFile);
+        // Set up from/to UI
+        endExhibitIndex = startExhibitIndex - 1;
+        startExhibitTextView.setText(exhibitsList.get(startExhibitIndex));
+        endExhibitTextView.setText(exhibitsList.get(endExhibitIndex));
+
+        ArrayList<String> paths = getExhibitPaths(exhibitsList.get(startExhibitIndex),exhibitsList.get(endExhibitIndex), edgeFile, graphFile);
 
         adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, paths);
         listView.setAdapter(adapter);
 
-        currentExhibitIndex--;
+        startExhibitIndex--;
         updateButtonStates();
     }
 
@@ -82,13 +101,18 @@ public class NavigationPageActivity extends AppCompatActivity {
             // The button should finish and dismiss the direction avtivity.
             finish();
         } else {
-            ArrayList<String> paths = getExhibitPaths(exhibitsList.get(currentExhibitIndex),exhibitsList.get(currentExhibitIndex + 1), edgeFile, graphFile);
+            // Set up from/to UI
+            endExhibitIndex = startExhibitIndex + 1;
+            startExhibitTextView.setText(exhibitsList.get(startExhibitIndex));
+            endExhibitTextView.setText(exhibitsList.get(endExhibitIndex));
+
+            ArrayList<String> paths = getExhibitPaths(exhibitsList.get(startExhibitIndex),exhibitsList.get(endExhibitIndex), edgeFile, graphFile);
 
             adapter = new ArrayAdapter<String>(this,
                     android.R.layout.simple_list_item_1, paths);
             listView.setAdapter(adapter);
         }
-        currentExhibitIndex++;
+        startExhibitIndex++;
         updateButtonStates();
     }
 
@@ -113,11 +137,11 @@ public class NavigationPageActivity extends AppCompatActivity {
     }
 
     private boolean isAtFirstExhibit() {
-        return currentExhibitIndex == 0;
+        return startExhibitIndex == 0;
     }
 
     private boolean isAtLastExhibit() {
-        return currentExhibitIndex >= exhibitsList.size() - 1;
+        return startExhibitIndex >= exhibitsList.size() - 1;
     }
 
     private ArrayList<String> getExhibitPaths(String startId, String endId, String edgeFile, String graphFile) {
@@ -152,5 +176,61 @@ public class NavigationPageActivity extends AppCompatActivity {
             converted.put(name, key);
         }
         return converted;
+    }
+
+    public void directionOnClicked(View view) {
+        ArrayList<String> detailedPath = new ArrayList<>();
+
+        // TODO test
+        detailedPath = getDetailedPath("entrance_exit_gate", "hippo", nodeFile, edgeFile, graphFile);
+
+        if(!directionSwitch.isChecked()){
+            adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_list_item_1, detailedPath);
+        }
+
+        else{
+            adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_list_item_1, detailedPath);
+        }
+
+        listView.setAdapter(adapter);
+    }
+
+    public ArrayList<String> getDetailedPath(String startId, String endId, String vertexFile, String edgeFile, String graphFile){
+        ArrayList<String> detailedPath = new ArrayList<>();
+
+        String start = startId;
+        String goal = endId;
+
+        // 1. Load the graph...
+        Graph<String, IdentifiedWeightedEdge> g = ZooData.loadZooGraphJSON(this, graphFile);
+        GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g, start, goal);
+
+        // 2. Load the information about our nodes and edges...
+        Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this, vertexFile);
+        Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(this, edgeFile);
+
+        /*
+        for (IdentifiedWeightedEdge e : path.getEdgeList()) {
+            detailedPath.add("  %d. Walk %.0f meters along %s from '%s' to '%s'.\n",
+                    g.getEdgeWeight(e),
+                    eInfo.get(e.getId()).street,
+                    vInfo.get(g.getEdgeSource(e).toString()).name,
+                    vInfo.get(g.getEdgeTarget(e).toString()).name);
+        }*/
+
+        for (IdentifiedWeightedEdge e: path.getEdgeList()){
+            String p1 = vInfo.get(g.getEdgeSource(e).toString()).name;
+            String p2 = vInfo.get(g.getEdgeTarget(e).toString()).name;
+            double eWeight = g.getEdgeWeight(e);
+
+            detailedPath.add(
+                    "Proceed on " +
+                    p1 + " " + eWeight +
+                    " ft towards " + p2
+            );
+        }
+        return detailedPath;
     }
 }

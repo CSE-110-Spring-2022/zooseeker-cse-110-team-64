@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        exhibitNames = loadMapFromAssets(this, "sample_node_info.json");
+        exhibitNames = loadMapFromAssets(this, "sample_vertex_info.json");
 
         listView = findViewById(R.id.list);
 
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         //button function end
 
         //Plan Button function
-        idAndNameMap = loadExhibitFromAssets(this,"sample_node_info.json");
+        idAndNameMap = loadExhibitFromAssets(this, "sample_vertex_info.json");
         //plan function end
         // new:
         newlist = findViewById(R.id.new_list);
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         Map<String, Double> beforeSorted = new HashMap<>();
         String start = "entrance_exit_gate";
         Graph<String, IdentifiedWeightedEdge> g = ZooData.loadZooGraphJSON(this,"sample_zoo_graph.json");
-        Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this,"sample_node_info.json");
+        Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this, "sample_vertex_info.json");
         Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(this,"sample_edge_info.json");
         for(String exhibit : unsortedList) {
             GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g, start, exhibit);
@@ -183,9 +183,10 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         ArrayList<String> exhibitNames = new ArrayList<>();
         for(String key : vInfo.keySet()) {
             String name = Objects.requireNonNull(vInfo.get(key)).name;
+            String kind = Objects.requireNonNull(vInfo.get(key)).kind;
 
             //Tech: remove entrance from list
-            if(name.compareTo("Entrance and Exit Gate") != 0)
+            if(kind.compareTo("exhibit") == 0 )
                 exhibitNames.add(name);
         }
         String[] names = new String[exhibitNames.size()];
