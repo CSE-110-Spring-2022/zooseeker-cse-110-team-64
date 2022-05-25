@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class NavigationPageActivity extends AppCompatActivity {
+
     private int startExhibitIndex = 0;
     private int endExhibitIndex = 1;
     private ArrayList<String> exhibitsList = new ArrayList<>();
@@ -31,6 +32,7 @@ public class NavigationPageActivity extends AppCompatActivity {
     private TextView endExhibitTextView;
     private Button prevButton;
     private Button nextButton;
+    private Button skipButton;
     private Switch directionSwitch;
 
     private String edgeFile = "sample_edge_info.json";
@@ -69,6 +71,8 @@ public class NavigationPageActivity extends AppCompatActivity {
         // Prepare for buttons
         prevButton = findViewById(R.id.previous_btn);
         nextButton = findViewById(R.id.next_btn);
+        skipButton = findViewById(R.id.skip_btn);
+        skipButton.setOnClickListener(this::onSkipBtnClicked);
         directionSwitch = findViewById(R.id.direction_switch);
 
         updateButtonStates();
@@ -76,6 +80,7 @@ public class NavigationPageActivity extends AppCompatActivity {
 
     public void onPreviousBtnClicked(View view) {
         // Get the direction text for previous exhibit
+
 
         if (isAtFirstExhibit()) {
             return;
@@ -115,7 +120,38 @@ public class NavigationPageActivity extends AppCompatActivity {
         startExhibitIndex++;
         updateButtonStates();
     }
+    public void onSkipBtnClicked(View view) {
+        String skipTarget = exhibitsList.get(startExhibitIndex);
+        //exhibitsList = new ArrayList<>();
 
+        startExhibitIndex = 0;
+        endExhibitIndex =1;
+        setContentView(R.layout.activity_navigation_page);
+
+        //Intent j = getIntent();
+        //exhibitsList.addAll((ArrayList<String>) j.getSerializableExtra("Sorted IDs"));
+        exhibitsList.remove(skipTarget);
+
+
+        listView = findViewById(R.id.direction_listView);
+        startExhibitTextView = findViewById(R.id.startExhibitTextView);
+        endExhibitTextView = findViewById(R.id.endExhibitTextView);
+        if (exhibitsList.size() >= 2) {
+            // Set up from/to UI
+            startExhibitTextView.setText(exhibitsList.get(startExhibitIndex));
+            endExhibitTextView.setText(exhibitsList.get(endExhibitIndex));
+            ArrayList<String> paths = getExhibitPaths(exhibitsList.get(startExhibitIndex),exhibitsList.get(endExhibitIndex), edgeFile, graphFile);
+
+            adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_list_item_1, paths);
+            listView.setAdapter(adapter);
+            startExhibitIndex++;
+        }
+
+
+        updateButtonStates();
+
+    }
 
     // Helper functions
     private void updateButtonStates() {
@@ -233,4 +269,5 @@ public class NavigationPageActivity extends AppCompatActivity {
         }
         return detailedPath;
     }
+
 }
