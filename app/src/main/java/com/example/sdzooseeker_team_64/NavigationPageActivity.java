@@ -1,7 +1,9 @@
 package com.example.sdzooseeker_team_64;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class NavigationPageActivity extends AppCompatActivity {
-    private int currentExhibitIndex = 0;
+    private int currentExhibitIndex;
     private ArrayList<String> exhibitsList = new ArrayList<>();
     ArrayAdapter<String> adapter;
 
@@ -36,22 +38,32 @@ public class NavigationPageActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_page);
-
-        currentExhibitIndex = 0;
+        saveClass();
+        currentExhibitIndex = MyPrefs.getTheLength(App.getContext(), "currentIndex");
         exhibitsList.add("entrance_exit_gate");
         listView = findViewById(R.id.direction_listView);
 
         //Todo convert exhibitList string to ID
-        Intent i = getIntent();
-        exhibitsList.addAll((ArrayList<String>) i.getSerializableExtra("Sorted IDs"));
+        //Intent i = getIntent();
+        //exhibitsList.addAll((ArrayList<String>) i.getSerializableExtra("Sorted IDs"));
+        for(int i = 0; i < MyPrefs.getTheLength(App.getContext(), "serial_size"); i++) {
+            exhibitsList.add(MyPrefs.getTheString(App.getContext(), "serial"+i));
+        }
+        if(currentExhibitIndex > 0) {
+            ArrayList<String> paths = getExhibitPaths(exhibitsList.get(currentExhibitIndex-1),exhibitsList.get(currentExhibitIndex), edgeFile, graphFile);
 
-        if (exhibitsList.size() >= 2) {
+            adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_list_item_1, paths);
+            listView.setAdapter(adapter);
+        }
+        else {
             ArrayList<String> paths = getExhibitPaths(exhibitsList.get(0),exhibitsList.get(1), edgeFile, graphFile);
 
             adapter = new ArrayAdapter<String>(this,
                     android.R.layout.simple_list_item_1, paths);
             listView.setAdapter(adapter);
             currentExhibitIndex++;
+            saveIndex(currentExhibitIndex);
         }
 
         // Prepare for buttons
@@ -74,12 +86,17 @@ public class NavigationPageActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
 
         currentExhibitIndex--;
+        saveIndex(currentExhibitIndex);
         updateButtonStates();
     }
 
     public void onNextBtnClicked(View view) {
         if (isAtLastExhibit()) {
             // The button should finish and dismiss the direction avtivity.
+            currentExhibitIndex = 0;
+            saveIndex(currentExhibitIndex);
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
             finish();
         } else {
             ArrayList<String> paths = getExhibitPaths(exhibitsList.get(currentExhibitIndex),exhibitsList.get(currentExhibitIndex + 1), edgeFile, graphFile);
@@ -89,6 +106,7 @@ public class NavigationPageActivity extends AppCompatActivity {
             listView.setAdapter(adapter);
         }
         currentExhibitIndex++;
+        saveIndex(currentExhibitIndex);
         updateButtonStates();
     }
 
@@ -153,4 +171,13 @@ public class NavigationPageActivity extends AppCompatActivity {
         }
         return converted;
     }
+
+
+    private void saveClass() {
+        MyPrefs.setLastActivity(App.getContext(), "lastActivity", this.getClass().getName());
+    }
+    private void saveIndex(int i) {
+        MyPrefs.saveLength(App.getContext(), "currentIndex", i);
+    }
+
 }

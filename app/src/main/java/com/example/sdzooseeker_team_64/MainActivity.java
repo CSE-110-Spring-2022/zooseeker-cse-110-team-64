@@ -2,6 +2,7 @@ package com.example.sdzooseeker_team_64;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -62,8 +63,12 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        saveClass();
+        int currentSize;
+        currentSize = MyPrefs.getTheLength(App.getContext(), "exhibitListSize");
+        loadList(currentSize);
         exhibitNames = loadMapFromAssets(this, "sample_node_info.json");
+
 
         listView = findViewById(R.id.list);
 
@@ -74,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         planButton = findViewById(R.id.plan_btn);
         planButton.setOnClickListener(this::onPlanClicked);
         countView = findViewById(R.id.exhibit_count);
-        countView.setText("0");
+        countView.setText(Integer.toString(currentSize));
 
         startButton = findViewById(R.id.start_btn);
         startButton.setAlpha(0);
@@ -89,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                 android.R.layout.simple_list_item_1,
                 exhibitList);
         newlist.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
         // end:
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -98,11 +104,23 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                     return;
                 }
                 exhibitList.add(item);
+                saveList(exhibitList);
                 String number = Integer.toString(exhibitList.size());
                 countView.setText(number);
                 adapter.notifyDataSetChanged();
             }
         });
+    }
+    public void loadList(int length) {
+        for(int i = 0; i < length; i++) {
+            exhibitList.add(MyPrefs.getTheString(App.getContext(), "exhibitList"+i));
+        }
+    }
+    public void saveList(ArrayList<String> temp) {
+        for(int i = 0; i < temp.size(); i++) {
+            MyPrefs.saveString(App.getContext(), "exhibitList", temp.get(i), i);
+        }
+        MyPrefs.saveLength(App.getContext(), "exhibitListSize",temp.size());
     }
 
     private Map<String, Double> sortByDistance(ArrayList<String> unsortedList) {
@@ -132,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 
     public void onStartDirectionClicked(View view) {
         Intent intent = new Intent(this, NavigationPageActivity.class);
-        serializeSortedId(intent);
+        //serializeSortedId(intent);
         startActivity(intent);
     }
 
@@ -224,6 +242,9 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             output += "m\n";
         }
         //end
+        //new5/24
+        serializeSortedId();
+        //end/5/24
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
         boolean focusable = true;
@@ -236,11 +257,18 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         }
     }
 
-    private void serializeSortedId(Intent i){
+    private void serializeSortedId(){
         sorted_IDs = new ArrayList<String>();
         for(String id: sortedList.keySet()){
             sorted_IDs.add(id);
         }
-        i.putExtra("Sorted IDs", sorted_IDs);
+        for(int i = 0; i < sorted_IDs.size(); i++) {
+            MyPrefs.saveString(App.getContext(), "serial", sorted_IDs.get(i), i);
+        }
+        MyPrefs.saveLength(App.getContext(), "serial_size", sorted_IDs.size());
+    }
+
+    private void saveClass() {
+        MyPrefs.setLastActivity(App.getContext(), "lastActivity", this.getClass().getName());
     }
 }
