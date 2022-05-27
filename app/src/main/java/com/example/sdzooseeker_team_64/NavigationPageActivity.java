@@ -21,9 +21,11 @@ import java.util.Map;
 import java.util.Objects;
 
 public class NavigationPageActivity extends AppCompatActivity {
+
     private int startExhibitIndex;
     private int endExhibitIndex;
     private int status;
+
     private ArrayList<String> exhibitsList = new ArrayList<>();
     ArrayAdapter<String> adapter;
 
@@ -32,6 +34,7 @@ public class NavigationPageActivity extends AppCompatActivity {
     private TextView endExhibitTextView;
     private Button prevButton;
     private Button nextButton;
+    private Button skipButton;
     private Switch directionSwitch;
 
     // detailed and brief path
@@ -104,6 +107,8 @@ public class NavigationPageActivity extends AppCompatActivity {
         // Prepare for buttons
         prevButton = findViewById(R.id.previous_btn);
         nextButton = findViewById(R.id.next_btn);
+        skipButton = findViewById(R.id.skip_btn);
+        skipButton.setOnClickListener(this::onSkipBtnClicked);
         directionSwitch = findViewById(R.id.direction_switch);
 
         updateButtonStates();
@@ -111,6 +116,7 @@ public class NavigationPageActivity extends AppCompatActivity {
 
     public void onPreviousBtnClicked(View view) {
         // Get the direction text for previous exhibit
+
 
         if (isAtFirstExhibit()) {
             return;
@@ -188,6 +194,42 @@ public class NavigationPageActivity extends AppCompatActivity {
         startExhibitIndex++;
         saveStatus(1);
         updateButtonStates();
+    }
+    public void onSkipBtnClicked(View view) {
+        //check if the current page is the last page
+        if (isAtLastExhibit()){
+
+            endExhibitIndex = startExhibitIndex - 1;
+            startExhibitTextView.setText(exhibitsList.get(startExhibitIndex));
+            endExhibitTextView.setText(exhibitsList.get(endExhibitIndex));
+
+            ArrayList<String> paths = getExhibitPaths(exhibitsList.get(startExhibitIndex),exhibitsList.get(endExhibitIndex), edgeFile, graphFile);
+
+            adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_list_item_1, paths);
+            listView.setAdapter(adapter);
+            String skipTarget = exhibitsList.get(startExhibitIndex);
+            exhibitsList.remove(skipTarget);
+            startExhibitIndex--;
+        }else {
+            String skipTarget = exhibitsList.get(startExhibitIndex);
+            exhibitsList.remove(skipTarget);
+            startExhibitIndex--;
+            endExhibitIndex = startExhibitIndex + 1;
+            startExhibitTextView.setText(exhibitsList.get(startExhibitIndex));
+            endExhibitTextView.setText(exhibitsList.get(endExhibitIndex));
+
+            ArrayList<String> paths = getExhibitPaths(exhibitsList.get(startExhibitIndex), exhibitsList.get(endExhibitIndex), edgeFile, graphFile);
+
+            adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_list_item_1, paths);
+            listView.setAdapter(adapter);
+
+            startExhibitIndex++;
+        }
+
+        updateButtonStates();
+
     }
 
 
@@ -456,5 +498,5 @@ public class NavigationPageActivity extends AppCompatActivity {
     private void saveStatus(int i) {
         MyPrefs.saveLength(App.getContext(), "status", i);
     }
-    //cao
+
 }
