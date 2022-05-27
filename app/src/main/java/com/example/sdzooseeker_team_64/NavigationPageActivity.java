@@ -203,10 +203,19 @@ public class NavigationPageActivity extends AppCompatActivity {
             startExhibitTextView.setText(exhibitsList.get(startExhibitIndex));
             endExhibitTextView.setText(exhibitsList.get(endExhibitIndex));
 
-            ArrayList<String> paths = getExhibitPaths(exhibitsList.get(startExhibitIndex),exhibitsList.get(endExhibitIndex), edgeFile, graphFile);
+            detailedPath = getDetailedPath(exhibitsList.get(startExhibitIndex), exhibitsList.get(endExhibitIndex),  nodeFile, edgeFile, graphFile);
+            briefPath = getBriefPath(exhibitsList.get(startExhibitIndex), exhibitsList.get(endExhibitIndex),  nodeFile, edgeFile, graphFile);
 
-            adapter = new ArrayAdapter<String>(this,
-                    android.R.layout.simple_list_item_1, paths);
+            if(!directionSwitch.isChecked()){
+                adapter = new ArrayAdapter<String>(this,
+                        android.R.layout.simple_list_item_1, briefPath);
+            }
+
+            else{
+                adapter = new ArrayAdapter<String>(this,
+                        android.R.layout.simple_list_item_1, detailedPath);
+            }
+
             listView.setAdapter(adapter);
             String skipTarget = exhibitsList.get(startExhibitIndex);
             exhibitsList.remove(skipTarget);
@@ -219,10 +228,19 @@ public class NavigationPageActivity extends AppCompatActivity {
             startExhibitTextView.setText(exhibitsList.get(startExhibitIndex));
             endExhibitTextView.setText(exhibitsList.get(endExhibitIndex));
 
-            ArrayList<String> paths = getExhibitPaths(exhibitsList.get(startExhibitIndex), exhibitsList.get(endExhibitIndex), edgeFile, graphFile);
+            detailedPath = getDetailedPath(exhibitsList.get(startExhibitIndex), exhibitsList.get(endExhibitIndex),  nodeFile, edgeFile, graphFile);
+            briefPath = getBriefPath(exhibitsList.get(startExhibitIndex), exhibitsList.get(endExhibitIndex),  nodeFile, edgeFile, graphFile);
 
-            adapter = new ArrayAdapter<String>(this,
-                    android.R.layout.simple_list_item_1, paths);
+            if(!directionSwitch.isChecked()){
+                adapter = new ArrayAdapter<String>(this,
+                        android.R.layout.simple_list_item_1, briefPath);
+            }
+
+            else{
+                adapter = new ArrayAdapter<String>(this,
+                        android.R.layout.simple_list_item_1, detailedPath);
+            }
+
             listView.setAdapter(adapter);
 
             startExhibitIndex++;

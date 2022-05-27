@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         countView.setText(Integer.toString(currentSize));
 
         startButton = findViewById(R.id.start_btn);
-        startButton.setAlpha(0);
+//        startButton.setAlpha(0);
         //button function end
 
         //Plan Button function
@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this, "sample_vertex_info.json");
         Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(this,"sample_edge_info.json");
         for(String exhibit : unsortedList) {
+            System.out.println(exhibit);
             GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g, start, exhibit);
             double distance = 0;
             for (IdentifiedWeightedEdge e : path.getEdgeList()) {
@@ -222,9 +223,13 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.popup, null);
 
+        System.out.println("list:");
+        System.out.println(exhibitList);
+
         for(String str : exhibitList) {
             idList.add(idAndNameMap.get(str));
         }
+        System.out.println(idList);
         //After sorted
         Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this, nodeFile);
 
@@ -236,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             output += sortedList.get(str);
             output += "m\n";
         }
+
         //end
         //new5/24
         serializeSortedId();
