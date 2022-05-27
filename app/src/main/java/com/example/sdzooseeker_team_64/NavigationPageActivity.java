@@ -21,8 +21,9 @@ import java.util.Map;
 import java.util.Objects;
 
 public class NavigationPageActivity extends AppCompatActivity {
-    private int startExhibitIndex = 0;
-    private int endExhibitIndex = 1;
+    private int startExhibitIndex;
+    private int endExhibitIndex;
+    private int status;
     private ArrayList<String> exhibitsList = new ArrayList<>();
     ArrayAdapter<String> adapter;
 
@@ -47,7 +48,17 @@ public class NavigationPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_page);
         setTitle("Direction");
-
+        //marin
+        saveClass();
+        startExhibitIndex = MyPrefs.getTheLength(App.getContext(), "startIndex");
+        status = MyPrefs.getStatus(App.getContext(), "status");
+        if(status == 1) {
+            endExhibitIndex = startExhibitIndex + 1;
+        }
+        else {
+            endExhibitIndex = startExhibitIndex - 1;
+        }
+        //cao
         exhibitsList.add("entrance_exit_gate");
 
         // Prepare for UI
@@ -56,8 +67,9 @@ public class NavigationPageActivity extends AppCompatActivity {
         endExhibitTextView = findViewById(R.id.endExhibitTextView);
 
         //convert exhibitList string to ID
-        Intent i = getIntent();
-        exhibitsList.addAll((ArrayList<String>) i.getSerializableExtra("Sorted IDs"));
+        for(int i = 0; i < MyPrefs.getTheLength(App.getContext(), "serial_size"); i++) {
+            exhibitsList.add(MyPrefs.getTheString(App.getContext(), "serial"+i));
+        }
 
         // setup detailed and brief path
         detailedPath = new ArrayList<>();
@@ -79,7 +91,14 @@ public class NavigationPageActivity extends AppCompatActivity {
             adapter = new ArrayAdapter<String>(this,
                     android.R.layout.simple_list_item_1, briefPath);
             listView.setAdapter(adapter);
-            startExhibitIndex++;
+            saveStartIndex(startExhibitIndex);
+            if(status == 1) {
+                startExhibitIndex++;
+            }
+            else {
+                startExhibitIndex--;
+            }
+
         }
 
         // Prepare for buttons
@@ -99,6 +118,7 @@ public class NavigationPageActivity extends AppCompatActivity {
 
         // Set up from/to UI
         endExhibitIndex = startExhibitIndex - 1;
+
 
         String startId = exhibitsList.get(startExhibitIndex);
         String endId = exhibitsList.get(endExhibitIndex);
@@ -121,18 +141,26 @@ public class NavigationPageActivity extends AppCompatActivity {
         }
 
         listView.setAdapter(adapter);
-
+        saveStartIndex(startExhibitIndex);
         startExhibitIndex--;
+        saveStatus(0);
         updateButtonStates();
     }
 
     public void onNextBtnClicked(View view) {
         if (isAtLastExhibit()) {
             // The button should finish and dismiss the direction avtivity.
-            finish();
+            //marin
+            startExhibitIndex = 0;
+            saveStartIndex(startExhibitIndex);
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            //cao
+            //finish();
         } else {
             // Set up from/to UI
             endExhibitIndex = startExhibitIndex + 1;
+
 
             String startId = exhibitsList.get(startExhibitIndex);
             String endId = exhibitsList.get(endExhibitIndex);
@@ -156,7 +184,9 @@ public class NavigationPageActivity extends AppCompatActivity {
 
             listView.setAdapter(adapter);
         }
+        saveStartIndex(startExhibitIndex);
         startExhibitIndex++;
+        saveStatus(1);
         updateButtonStates();
     }
 
@@ -415,4 +445,16 @@ public class NavigationPageActivity extends AppCompatActivity {
         }
         return exhibitPaths;
     }*/
+
+    //marin
+    private void saveClass() {
+        MyPrefs.setLastActivity(App.getContext(), "lastActivity", this.getClass().getName());
+    }
+    private void saveStartIndex(int i) {
+        MyPrefs.saveLength(App.getContext(), "startIndex", i);
+    }
+    private void saveStatus(int i) {
+        MyPrefs.saveLength(App.getContext(), "status", i);
+    }
+    //cao
 }
