@@ -121,37 +121,42 @@ public class NavigationPageActivity extends AppCompatActivity {
         updateButtonStates();
     }
     public void onSkipBtnClicked(View view) {
-        String skipTarget = exhibitsList.get(startExhibitIndex);
-        //exhibitsList = new ArrayList<>();
 
-        startExhibitIndex = 0;
-        endExhibitIndex =1;
-        setContentView(R.layout.activity_navigation_page);
+        if (isAtLastExhibit()){
 
-        //Intent j = getIntent();
-        //exhibitsList.addAll((ArrayList<String>) j.getSerializableExtra("Sorted IDs"));
-        exhibitsList.remove(skipTarget);
-
-
-        listView = findViewById(R.id.direction_listView);
-        startExhibitTextView = findViewById(R.id.startExhibitTextView);
-        endExhibitTextView = findViewById(R.id.endExhibitTextView);
-        if (exhibitsList.size() >= 2) {
-            // Set up from/to UI
+            endExhibitIndex = startExhibitIndex - 1;
             startExhibitTextView.setText(exhibitsList.get(startExhibitIndex));
             endExhibitTextView.setText(exhibitsList.get(endExhibitIndex));
+
             ArrayList<String> paths = getExhibitPaths(exhibitsList.get(startExhibitIndex),exhibitsList.get(endExhibitIndex), edgeFile, graphFile);
 
             adapter = new ArrayAdapter<String>(this,
                     android.R.layout.simple_list_item_1, paths);
             listView.setAdapter(adapter);
+            String skipTarget = exhibitsList.get(startExhibitIndex);
+            exhibitsList.remove(skipTarget);
+            startExhibitIndex--;
+        }else {
+            String skipTarget = exhibitsList.get(startExhibitIndex);
+            exhibitsList.remove(skipTarget);
+            startExhibitIndex--;
+            endExhibitIndex = startExhibitIndex + 1;
+            startExhibitTextView.setText(exhibitsList.get(startExhibitIndex));
+            endExhibitTextView.setText(exhibitsList.get(endExhibitIndex));
+
+            ArrayList<String> paths = getExhibitPaths(exhibitsList.get(startExhibitIndex), exhibitsList.get(endExhibitIndex), edgeFile, graphFile);
+
+            adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_list_item_1, paths);
+            listView.setAdapter(adapter);
+
             startExhibitIndex++;
         }
-
 
         updateButtonStates();
 
     }
+
 
     // Helper functions
     private void updateButtonStates() {
