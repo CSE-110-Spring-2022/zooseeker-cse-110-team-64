@@ -121,7 +121,7 @@ public class NavigationPageActivity extends AppCompatActivity {
         updateButtonStates();
     }
     public void onSkipBtnClicked(View view) {
-
+        //check if the current page is the last page
         if (isAtLastExhibit()){
 
             endExhibitIndex = startExhibitIndex - 1;
