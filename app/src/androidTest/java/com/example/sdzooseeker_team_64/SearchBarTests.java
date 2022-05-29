@@ -1,30 +1,15 @@
 package com.example.sdzooseeker_team_64;
 
-import android.content.ClipData;
-import android.content.Context;
-import android.content.res.Resources;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.EditText;
 import android.widget.ListView;
 
-import androidx.appcompat.widget.SearchView;
-import androidx.lifecycle.Lifecycle;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.test.core.app.ActivityScenario;
-import androidx.test.espresso.Espresso;
 import androidx.test.espresso.ViewInteraction;
-import androidx.test.espresso.action.ViewActions;
-import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
 
-import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -45,11 +30,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.Matchers.allOf;
-import static org.junit.Assert.*;
-
-import java.util.List;
 
 /**
  * Instrumented tests on Search Bar related functionalities.
@@ -99,7 +80,7 @@ public class SearchBarTests {
 
         // Test if the results count matches expectation.
         final int count = 2;
-        onView(withId(R.id.list)).check(matches(new TypeSafeMatcher<View>() {
+        onView(withId(R.id.search_list_view)).check(matches(new TypeSafeMatcher<View>() {
             @Override
             public boolean matchesSafely(View view) {
                 ListView listView = (ListView) view;
@@ -115,14 +96,14 @@ public class SearchBarTests {
         // Test if search results texts match expectation.
         ViewInteraction textView = onView(
                 allOf(withId(android.R.id.text1), withText("Snake"),
-                        withParent(allOf(withId(R.id.list),
+                        withParent(allOf(withId(R.id.search_list_view),
                                 withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
                         isDisplayed()));
         textView.check(matches(withText("Snake")));
 
         ViewInteraction textView2 = onView(
                 allOf(withId(android.R.id.text1), withText("Sneasel"),
-                        withParent(allOf(withId(R.id.list),
+                        withParent(allOf(withId(R.id.search_list_view),
                                 withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
                         isDisplayed()));
         textView2.check(matches(withText("Sneasel")));
@@ -168,7 +149,7 @@ public class SearchBarTests {
 
         // Test if the results count matches expectation.
         final int count = 1;
-        onView(withId(R.id.list)).check(matches(new TypeSafeMatcher<View>() {
+        onView(withId(R.id.search_list_view)).check(matches(new TypeSafeMatcher<View>() {
             @Override
             public boolean matchesSafely(View view) {
                 ListView listView = (ListView) view;
@@ -184,7 +165,7 @@ public class SearchBarTests {
         // Test if search results texts match expectation.
         ViewInteraction textView = onView(
                 allOf(withId(android.R.id.text1), withText("Dog"),
-                        withParent(allOf(withId(R.id.list),
+                        withParent(allOf(withId(R.id.search_list_view),
                                 withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
                         isDisplayed()));
         textView.check(matches(withText("Dog")));

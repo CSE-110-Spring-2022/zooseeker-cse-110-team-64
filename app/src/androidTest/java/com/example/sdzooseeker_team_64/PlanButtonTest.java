@@ -42,7 +42,7 @@ public class PlanButtonTest {
     @Test
     public void PlanButtonTest() {
         DataInteraction materialTextView = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))
@@ -50,7 +50,7 @@ public class PlanButtonTest {
         materialTextView.perform(click());
 
         DataInteraction materialTextView2 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))
@@ -58,7 +58,7 @@ public class PlanButtonTest {
         materialTextView2.perform(click());
 
         DataInteraction materialTextView3 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))
@@ -66,7 +66,7 @@ public class PlanButtonTest {
         materialTextView3.perform(click());
 
         DataInteraction materialTextView4 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))
@@ -74,7 +74,7 @@ public class PlanButtonTest {
         materialTextView4.perform(click());
 
         DataInteraction materialTextView5 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))
@@ -82,7 +82,7 @@ public class PlanButtonTest {
         materialTextView5.perform(click());
 
         DataInteraction materialTextView6 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))

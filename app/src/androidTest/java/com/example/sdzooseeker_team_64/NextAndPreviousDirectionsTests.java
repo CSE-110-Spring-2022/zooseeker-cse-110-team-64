@@ -42,7 +42,7 @@ public class NextAndPreviousDirectionsTests {
     @Test
     public void nextButtonExistsTest() {
         DataInteraction materialTextView = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))
@@ -50,7 +50,7 @@ public class NextAndPreviousDirectionsTests {
         materialTextView.perform(click());
 
         DataInteraction materialTextView2 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))
@@ -77,7 +77,7 @@ public class NextAndPreviousDirectionsTests {
     @Test
     public void nextButtonTest() {
         DataInteraction materialTextView = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))
@@ -85,7 +85,7 @@ public class NextAndPreviousDirectionsTests {
         materialTextView.perform(click());
 
         DataInteraction materialTextView2 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))
@@ -122,7 +122,7 @@ public class NextAndPreviousDirectionsTests {
     @Test
     public void prevButtonExistsTest() {
         DataInteraction materialTextView = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))
@@ -130,7 +130,7 @@ public class NextAndPreviousDirectionsTests {
         materialTextView.perform(click());
 
         DataInteraction materialTextView2 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))
@@ -167,7 +167,7 @@ public class NextAndPreviousDirectionsTests {
     @Test
     public void prevButtonNotExistsAtFirstExhibitTest() {
         DataInteraction materialTextView = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))
@@ -175,7 +175,7 @@ public class NextAndPreviousDirectionsTests {
         materialTextView.perform(click());
 
         DataInteraction materialTextView2 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))
@@ -202,7 +202,7 @@ public class NextAndPreviousDirectionsTests {
     @Test
     public void nextButtonNotExistsAtLastExhibitTest() {
         DataInteraction materialTextView = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))
@@ -210,7 +210,7 @@ public class NextAndPreviousDirectionsTests {
         materialTextView.perform(click());
 
         DataInteraction materialTextView2 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))

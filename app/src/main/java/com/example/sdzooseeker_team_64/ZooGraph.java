@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -49,6 +50,10 @@ public class ZooGraph implements Serializable {
             this.lng = lng;
         }
 
+        public String toString() {
+            return name;
+        }
+
     }
 
     public static class Trail implements Serializable {
@@ -61,20 +66,6 @@ public class ZooGraph implements Serializable {
         }
     }
 
-//    public static class Edge implements Serializable {
-//        public String id; // trail id
-//        public String source; // from exhibit id
-//        public String target; // to exhibit id
-//        public int weight; // length in feet
-//
-//        public Edge(String id, String source, String target, int weight) {
-//            this.id = id;
-//            this.source = source;
-//            this.target = target;
-//            this.weight = weight;
-//        }
-//    }
-
     public List<Exhibit> exhibits;
     public List<Trail> trails;
     public Graph<String, IdentifiedWeightedEdge> graph;
@@ -83,6 +74,16 @@ public class ZooGraph implements Serializable {
         this.exhibits = loadExhibits(context, "sample_vertex_info.json");
         this.trails = loadTrails(context, "sample_edge_info.json");
         this.graph = loadZooGraphJSON(context, "sample_zoo_graph.json");
+    }
+
+    public List<Exhibit> getAllStrictExhibits() {
+        List<Exhibit> allStrictExhibits = new ArrayList<>();
+        for (Exhibit exhibit : exhibits) {
+            if(exhibit.kind.equals("exhibit")) {
+                allStrictExhibits.add(exhibit);
+            }
+        }
+        return allStrictExhibits;
     }
 
     public Exhibit getExhibitWithId(String id) {

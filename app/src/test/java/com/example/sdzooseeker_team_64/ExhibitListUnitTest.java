@@ -28,7 +28,7 @@ public class ExhibitListUnitTest {
 
 
         scenario.onActivity(activity -> {
-            ListView listView = activity.findViewById(R.id.list);
+            ListView listView = activity.findViewById(R.id.search_list_view);
             instrumentation.runOnMainSync(new Runnable() {
                 @Override
                 public void run() {
@@ -36,7 +36,7 @@ public class ExhibitListUnitTest {
                     listView.performItemClick(listView.getChildAt(position), position, listView.getAdapter().getItemId(position));
                 }
             });
-            ListView newlist = activity.findViewById(R.id.new_list);
+            ListView newlist = activity.findViewById(R.id.selected_list);
 
 //            assertEquals("Lions",(String)newlist.getItemAtPosition(0));
         });

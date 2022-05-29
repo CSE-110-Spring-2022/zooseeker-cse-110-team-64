@@ -6,12 +6,10 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
@@ -65,7 +63,7 @@ public class StartDirectionTests {
         searchAutoComplete.perform(replaceText("ele"), closeSoftKeyboard());
 
         DataInteraction materialTextView = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))
@@ -95,7 +93,7 @@ public class StartDirectionTests {
         searchAutoComplete2.perform(replaceText("l"), closeSoftKeyboard());
 
         DataInteraction materialTextView2 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))

@@ -53,7 +53,7 @@ public class ExhibitListTest {
         actionMenuItemView.perform(click());
 
         DataInteraction materialTextView = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))
@@ -73,7 +73,7 @@ public class ExhibitListTest {
 
         ViewInteraction textView = onView(
                 allOf(withId(android.R.id.text1), withText("Lions"),
-                        withParent(allOf(withId(R.id.new_list),
+                        withParent(allOf(withId(R.id.selected_list),
                                 withParent(IsInstanceOf.<View>instanceOf(ViewGroup.class)))),
                         isDisplayed()));
         textView.check(matches(withText("Lions")));
@@ -89,7 +89,7 @@ public class ExhibitListTest {
         actionMenuItemView2.perform(click());
 
         DataInteraction materialTextView2 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))
@@ -97,7 +97,7 @@ public class ExhibitListTest {
         materialTextView2.perform(click());
 
         DataInteraction materialTextView3 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))
@@ -105,7 +105,7 @@ public class ExhibitListTest {
         materialTextView3.perform(click());
 
         DataInteraction materialTextView4 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.list),
+                .inAdapterView(allOf(withId(R.id.search_list_view),
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)))
@@ -125,21 +125,21 @@ public class ExhibitListTest {
 
         ViewInteraction textView2 = onView(
                 allOf(withId(android.R.id.text1), withText("Lions"),
-                        withParent(allOf(withId(R.id.new_list),
+                        withParent(allOf(withId(R.id.selected_list),
                                 withParent(IsInstanceOf.<View>instanceOf(ViewGroup.class)))),
                         isDisplayed()));
         textView2.check(matches(withText("Lions")));
 
         ViewInteraction textView3 = onView(
                 allOf(withId(android.R.id.text1), withText("Alligators"),
-                        withParent(allOf(withId(R.id.new_list),
+                        withParent(allOf(withId(R.id.selected_list),
                                 withParent(IsInstanceOf.<View>instanceOf(ViewGroup.class)))),
                         isDisplayed()));
         textView3.check(matches(withText("Alligators")));
 
         ViewInteraction textView4 = onView(
                 allOf(withId(android.R.id.text1), withText("Arctic Foxes"),
-                        withParent(allOf(withId(R.id.new_list),
+                        withParent(allOf(withId(R.id.selected_list),
                                 withParent(IsInstanceOf.<View>instanceOf(ViewGroup.class)))),
                         isDisplayed()));
         textView4.check(matches(withText("Arctic Foxes")));
