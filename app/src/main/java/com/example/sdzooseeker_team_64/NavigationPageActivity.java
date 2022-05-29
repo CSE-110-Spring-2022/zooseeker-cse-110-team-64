@@ -9,6 +9,7 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.jgrapht.Graph;
@@ -51,6 +52,7 @@ public class NavigationPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_page);
         setTitle("Direction");
+
         //marin
         saveClass();
         startExhibitIndex = MyPrefs.getTheLength(App.getContext(), "startIndex");

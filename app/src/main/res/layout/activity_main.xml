@@ -42,10 +42,10 @@
 
     <Button
         android:id="@+id/plan_btn"
-        android:layout_width="94dp"
+        android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_marginStart="158dp"
-        android:layout_marginEnd="159dp"
+        android:layout_marginStart="150dp"
+        android:layout_marginEnd="150dp"
         android:layout_marginBottom="16dp"
         android:backgroundTint="#8BC34A"
         android:onClick="onPlanBtnClicked"
@@ -67,18 +67,10 @@
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/plan_btn"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" /><![CDATA[
 
-    <Button
-        android:id="@+id/start_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:onClick="onStartDirectionClicked"
-        android:text="Start Direction"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
     android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+]]>
 </androidx.constraintlayout.widget.ConstraintLayout>

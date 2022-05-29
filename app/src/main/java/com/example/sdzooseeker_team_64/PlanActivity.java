@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.util.List;
 
@@ -23,11 +24,8 @@ public class PlanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plan);
         setTitle("Exhibit Planning");
-
-        // calling the action bar
+        // Setup Back Button on Navigation Bar
         ActionBar actionBar = getSupportActionBar();
-
-        // showing the back button in action bar
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         PlanExhibitListAdapter adapter = new PlanExhibitListAdapter();
@@ -41,6 +39,11 @@ public class PlanActivity extends AppCompatActivity {
         ZooPlan zooPlan = (ZooPlan) getIntent().getSerializableExtra(ZOOPLANKEY);
 
         adapter.setExhibitList(zooPlan.exhibits);
+    }
+
+    public void onStartDirectionClicked(View view) {
+        Intent intent = new Intent(this, NavigationPageActivity.class);
+        startActivity(intent);
     }
 
     // this event will enable the back

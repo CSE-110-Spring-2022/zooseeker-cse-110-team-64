@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     ListView searchListView;
     ListView selectedListView;
     Button planButton;
-    Button startButton;
     TextView countView;
 
     @Override
@@ -63,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         searchListView = findViewById(R.id.search_list);
         selectedListView = findViewById(R.id.selected_list);
         planButton = findViewById(R.id.plan_btn);
-        startButton = findViewById(R.id.start_btn);
         countView = findViewById(R.id.exhibit_count);
 
         // Setup View Components
@@ -98,12 +96,6 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     public void setupSelectedListView() {
         selectedListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, exhibitList);
         selectedListView.setAdapter(selectedListAdapter);
-    }
-
-    public void onStartDirectionClicked(View view) {
-        Intent intent = new Intent(this, NavigationPageActivity.class);
-        //serializeSortedId(intent);
-        startActivity(intent);
     }
 
     @Override
