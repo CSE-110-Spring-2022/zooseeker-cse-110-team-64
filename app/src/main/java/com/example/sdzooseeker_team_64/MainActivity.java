@@ -42,9 +42,9 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     // View Components
     ListView searchListView;
     ListView selectedListView;
-    TextView countView;
     Button planButton;
     Button startButton;
+    TextView countView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,22 +59,25 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         saveClass();
         loadList(exhibitList.size());
 
+        // Setup View Component References
         searchListView = findViewById(R.id.search_list);
+        selectedListView = findViewById(R.id.selected_list);
+        planButton = findViewById(R.id.plan_btn);
+        startButton = findViewById(R.id.start_btn);
+        countView = findViewById(R.id.exhibit_count);
+
+        // Setup View Components
+        planButton.setOnClickListener(this::onPlanClicked);
+        countView.setText(Integer.toString(exhibitList.size()));
+        setupSearchListView();
+        setupSelectedListView();
+    }
+
+    public void setupSearchListView() {
+        // Setup view data source
         searchListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, zooGraph.getAllStrictExhibits());
         searchListView.setAdapter(searchListAdapter);
 
-        planButton = findViewById(R.id.plan_btn);
-        planButton.setOnClickListener(this::onPlanClicked);
-        countView = findViewById(R.id.exhibit_count);
-        countView.setText(Integer.toString(exhibitList.size()));
-
-        startButton = findViewById(R.id.start_btn);
-
-        selectedListView = findViewById(R.id.selected_list);
-        selectedListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, exhibitList);
-        selectedListView.setAdapter(selectedListAdapter);
-
-        // end:
         searchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -90,6 +93,11 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                 }
             }
         });
+    }
+
+    public void setupSelectedListView() {
+        selectedListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, exhibitList);
+        selectedListView.setAdapter(selectedListAdapter);
     }
 
     public void onStartDirectionClicked(View view) {
@@ -122,24 +130,6 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         });
 
         return super.onCreateOptionsMenu(menu);
-    }
-
-    public static String[] loadMapFromAssets(Context context, String fileName) {
-        Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(context, fileName);
-
-        ArrayList<String> exhibitNames = new ArrayList<>();
-        for(String key : vInfo.keySet()) {
-            String name = Objects.requireNonNull(vInfo.get(key)).name;
-            String kind = Objects.requireNonNull(vInfo.get(key)).kind;
-
-            //Tech: remove entrance from list
-            if(kind.compareTo("exhibit") == 0 )
-                exhibitNames.add(name);
-        }
-        String[] names = new String[exhibitNames.size()];
-        names = exhibitNames.toArray(names);
-
-        return names;
     }
 
     void onPlanClicked(View view) {
