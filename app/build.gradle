@@ -31,10 +31,16 @@ android {
         }
     }
     namespace 'com.example.sdzooseeker_team_64'
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
     implementation 'androidx.preference:preference:1.1.1'
+    implementation 'androidx.navigation:navigation-fragment:2.3.5'
+    implementation 'androidx.navigation:navigation-ui:2.3.5'
+
     androidTestImplementation 'androidx.test:rules:1.4.0'
 
     //start here: adding Google's GSON and ROOM

@@ -1,53 +1,100 @@
 package com.example.sdzooseeker_team_64;
 
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-public class ZooPlan {
-    public List<ZooExhibit> exhibits;
+public class ZooPlan implements Serializable {
+    public List<ZooGraph.Exhibit> exhibits;
+    public LinkedHashMap<ZooGraph.Exhibit, Double> exhibitsInLinkedHashMap;
+    public ZooGraph zooGraph;
     private int currentStartExhibitIndex;
     private int currentEndExhibitIndex;
 
-    public ZooPlan() {
-        exhibits = new ArrayList<ZooExhibit>();
+    public static String ZOOPLANKEY = "ZOO_PLAN";
 
-        // Initialize instance variables
-        currentStartExhibitIndex = 0;
-        currentEndExhibitIndex = 1;
-    }
+    private ZooGraph.Exhibit getEntranceExitGate() { return zooGraph.getExhibitWithId("entrance_exit_gate"); }
 
-    public ZooPlan(List<ZooExhibit> exhibits) {
+    public ZooPlan(ZooGraph zooGraph, List<ZooGraph.Exhibit> exhibits) {
+        this.zooGraph = zooGraph;
         this.exhibits = exhibits;
+
         sortExhibits();
+
+        addGateToStartAndBack();
 
         // Initialize instance variables
         currentStartExhibitIndex = 0;
         currentEndExhibitIndex = 1;
     }
 
-    public ZooPlan(ZooExhibit[] exhibits) {
-        this.exhibits = Arrays.asList(exhibits);
-        sortExhibits();
-
-        // Initialize instance variables
-        currentStartExhibitIndex = 0;
-        currentEndExhibitIndex = 1;
+    public ZooPlan(ZooGraph zooGraph, ZooGraph.Exhibit[] exhibits) {
+        List<ZooGraph.Exhibit> exhibitsAsList = Arrays.asList(exhibits);
+        new ZooPlan(zooGraph, exhibitsAsList);
     }
 
-    public boolean addExhibit(ZooExhibit exhibit) {
+    public void addGateToStartAndBack() {
+        // add entrance_exit_gate to start and back
+        exhibits.add(0, getEntranceExitGate());
+        exhibits.add(exhibits.size(), getEntranceExitGate());
+    }
+
+    public boolean addExhibit(ZooGraph.Exhibit exhibit) {
         boolean isSuccessful = exhibits.add(exhibit);
         // sort all exhibits
         sortExhibits();
         return isSuccessful;
     }
 
-    public boolean removeExhibit(ZooExhibit exhibit) {
+    public boolean removeExhibit(ZooGraph.Exhibit exhibit) {
         return exhibits.remove(exhibit); // no need to sort
     }
 
-    public void sortExhibits() {
+    public void skipExhibit(ZooGraph.Exhibit exhibit) {
+        // remove one exhibit and re-plan the ones after it
+    }
 
+    public void sortExhibits() {
+        Map<ZooGraph.Exhibit, Double> unsorted = new HashMap<>();
+        String start = "entrance_exit_gate";
+        for(ZooGraph.Exhibit exhibit : exhibits) {
+            // find complete shortest path from gate to exhibit
+            System.out.println(exhibit.id);
+            // check if exhibit belongs to a group
+            GraphPath<String, IdentifiedWeightedEdge> path;
+            if (exhibit.groupId != null) {
+                path = DijkstraShortestPath.findPathBetween(zooGraph.graph, start, exhibit.groupId);
+            } else {
+                path = DijkstraShortestPath.findPathBetween(zooGraph.graph, start, exhibit.id);
+            }
+
+            // calculate total distance from gate to exhibit
+            double distance = 0;
+            for (IdentifiedWeightedEdge e : path.getEdgeList()) {
+                distance += zooGraph.graph.getEdgeWeight(e);
+            }
+            unsorted.put(exhibit, distance);
+        }
+
+        // update exhibits to sorted order
+        ArrayList<ZooGraph.Exhibit> sortedExhibits = new ArrayList<>();
+        LinkedHashMap<ZooGraph.Exhibit, Double> sortedExhibitsInLinkedHashMap = new LinkedHashMap<>();
+        unsorted.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue())
+                .forEachOrdered( x -> {
+                    sortedExhibits.add(x.getKey());
+                    sortedExhibitsInLinkedHashMap.put(x.getKey(), x.getValue());
+                });
+        exhibits = sortedExhibits;
+        exhibitsInLinkedHashMap = sortedExhibitsInLinkedHashMap;
     }
 
     public boolean goToNextExhibit() {

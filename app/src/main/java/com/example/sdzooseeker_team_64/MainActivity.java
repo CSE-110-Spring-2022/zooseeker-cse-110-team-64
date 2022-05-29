@@ -1,5 +1,7 @@
 package com.example.sdzooseeker_team_64;
 
+import static com.example.sdzooseeker_team_64.ZooPlan.ZOOPLANKEY;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,13 +30,17 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements Serializable {
 
-    //new:
+    // Deprecated
     ArrayList<String> exhibitList = new ArrayList<String>();
+
+    ZooGraph zooGraph;
+    ZooPlan zooPlan;
     ArrayAdapter<String> adapter;
     ListView newlist;
     //end
@@ -67,6 +73,11 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Initialize zoo graph, extract data from assets
+        zooGraph = new ZooGraph(this);
+
+
         //marin
         saveClass();
         int currentSize;
@@ -74,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         loadList(currentSize);
         //cao
         exhibitNames = loadMapFromAssets(this, "sample_vertex_info.json");
-
         listView = findViewById(R.id.list);
 
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, exhibitNames);
@@ -220,42 +230,54 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         return idNamePair;
     }
     void onPlanClicked(View view) {
-        LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.popup, null);
 
-        System.out.println("list:");
-        System.out.println(exhibitList);
-
-        for(String str : exhibitList) {
-            idList.add(idAndNameMap.get(str));
+        // create full plan
+        List<ZooGraph.Exhibit> exhibits = new ArrayList<>();
+        for (String exhibitName : exhibitList) {
+            exhibits.add(zooGraph.getExhibitWithName(exhibitName));
         }
-        System.out.println(idList);
-        //After sorted
-        Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this, nodeFile);
+        zooPlan = new ZooPlan(zooGraph, exhibits);
 
-        sortedList = sortByDistance(idList);
-        String output = "";
-        for(String str : sortedList.keySet()) {
-            output += vInfo.get(str).name;
-            output += ": ";
-            output += sortedList.get(str);
-            output += "m\n";
-        }
+        Intent intent = new Intent(this, PlanActivity.class);
+        intent.putExtra(ZOOPLANKEY, zooPlan);
+        startActivity(intent);
 
-        //end
-        //new5/24
-        serializeSortedId();
-        //end/5/24
-        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        boolean focusable = true;
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-        displayPlan = popupView.findViewById(R.id.plan_text);
-        displayPlan.setText(output);
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-        if(sortedList.size() > 0) {
-            startButton.setAlpha(1);
-        }
+//        LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
+//        View popupView = inflater.inflate(R.layout.popup, null);
+//
+//        System.out.println("list:");
+//        System.out.println(exhibitList);
+//
+//        for(String str : exhibitList) {
+//            idList.add(idAndNameMap.get(str));
+//        }
+//        System.out.println(idList);
+//        //After sorted
+//        Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this, nodeFile);
+//
+//        sortedList = sortByDistance(idList);
+//        String output = "";
+//        for(String str : sortedList.keySet()) {
+//            output += vInfo.get(str).name;
+//            output += ": ";
+//            output += sortedList.get(str);
+//            output += "m\n";
+//        }
+//
+//        //end
+//        //new5/24
+//        serializeSortedId();
+//        //end/5/24
+//        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+//        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+//        boolean focusable = true;
+//        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+//        displayPlan = popupView.findViewById(R.id.plan_text);
+//        displayPlan.setText(output);
+//        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+//        if(sortedList.size() > 0) {
+//            startButton.setAlpha(1);
+//        }
     }
 
     private void serializeSortedId(){

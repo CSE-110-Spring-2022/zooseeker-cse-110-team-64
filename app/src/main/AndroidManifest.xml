@@ -2,13 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name = ".App"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SDZooSeeker_Team_64">
+        <activity
+            android:name=".PlanActivity"
+            android:exported="false" />
         <activity
             android:name=".SettingsActivity"
             android:exported="false"
@@ -22,10 +25,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NavigationPageActivity"></activity>
-        <activity
-            android:name=".MainActivity">
-        </activity>
+        <activity android:name=".NavigationPageActivity" />
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>
