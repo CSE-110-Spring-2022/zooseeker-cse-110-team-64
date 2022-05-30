@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import java.util.ArrayList;
 
 public class MyPrefs {
-
     public static SharedPreferences getSharedPreferences(Context context) {
         SharedPreferences sp = context.getSharedPreferences("public", Context.MODE_PRIVATE);
         return sp;
@@ -27,6 +26,11 @@ public class MyPrefs {
         SharedPreferences.Editor editor = myPref.edit();
         editor.putString(name+index, str);
         editor.apply();
+    }
+    public static ZooGraph.Exhibit getTheExhibit(Context context, String key, ZooGraph zg) {
+        SharedPreferences myPref = getSharedPreferences(context);
+        String id = myPref.getString(key, "");
+        return zg.getExhibitWithId(id);
     }
     public static String getTheString(Context context, String key) {
         SharedPreferences myPref = getSharedPreferences(context);
