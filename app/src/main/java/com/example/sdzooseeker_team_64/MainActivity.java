@@ -2,7 +2,6 @@ package com.example.sdzooseeker_team_64;
 
 import static com.example.sdzooseeker_team_64.ZooPlan.ZOOPLANKEY;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,18 +16,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 
-import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements Serializable {
 
@@ -44,6 +34,9 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     ListView selectedListView;
     Button planButton;
     TextView countView;
+
+    // location permission
+    private final PermissionChecker permissionChecker = new PermissionChecker(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +62,10 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         countView.setText(Integer.toString(exhibitList.size()));
         setupSearchListView();
         setupSelectedListView();
+
+        /* Permissions Setup */
+        if (permissionChecker.ensurePermissions()) return;
+
     }
 
     public void setupSearchListView() {
@@ -144,5 +141,10 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 //            MyPrefs.saveString(App.getContext(), "exhibitList", temp.get(i), i);
 //        }
 //        MyPrefs.saveLength(App.getContext(), "exhibitListSize",temp.size());
+    }
+
+    private boolean ensurePermissions() {
+
+        return permissionChecker.ensurePermissions();
     }
 }
