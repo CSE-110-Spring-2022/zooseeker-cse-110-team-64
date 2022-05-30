@@ -124,9 +124,9 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     }
 
     void onPlanClicked(View view) {
-        zooPlan = new ZooPlan(zooGraph, exhibitList);
+        //zooPlan = new ZooPlan(zooGraph, exhibitList);
         Intent intent = new Intent(this, PlanActivity.class);
-        intent.putExtra(ZOOPLANKEY, zooPlan);
+        //intent.putExtra(ZOOPLANKEY, zooPlan);
         startActivity(intent);
     }
 

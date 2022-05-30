@@ -13,16 +13,24 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PlanActivity extends AppCompatActivity {
 
     public RecyclerView recyclerView;
-
+    List<ZooGraph.Exhibit> exhibitList;
+    ZooGraph zooGraph;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plan);
+        saveClass();
+        int currentSize;
+        currentSize = MyPrefs.getTheLength(App.getContext(), "exhibitListSize");
+        exhibitList = new ArrayList<>();
+        zooGraph = new ZooGraph(this);
+        loadList(currentSize);
         setTitle("Exhibit Planning");
         // Setup Back Button on Navigation Bar
         ActionBar actionBar = getSupportActionBar();
@@ -36,8 +44,8 @@ public class PlanActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         // get exhibit lists passed from previous activity
-        ZooPlan zooPlan = (ZooPlan) getIntent().getSerializableExtra(ZOOPLANKEY);
-
+        //ZooPlan zooPlan = (ZooPlan) getIntent().getSerializableExtra(ZOOPLANKEY);
+        ZooPlan zooPlan = new ZooPlan(zooGraph, exhibitList);
         adapter.setExhibitList(zooPlan.exhibits);
     }
 
@@ -56,5 +64,13 @@ public class PlanActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    private void saveClass() {
+        MyPrefs.setLastActivity(App.getContext(), "lastActivity", this.getClass().getName());
+    }
+    public void loadList(int length) {
+        for(int i = 0; i < length; i++) {
+            exhibitList.add(MyPrefs.getTheExhibit(App.getContext(), "exhibitList"+i, zooGraph));
+        }
     }
 }
