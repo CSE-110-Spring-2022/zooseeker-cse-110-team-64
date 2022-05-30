@@ -2,22 +2,26 @@ package com.example.sdzooseeker_team_64;
 
 import static com.example.sdzooseeker_team_64.ZooPlan.ZOOPLANKEY;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
-
-import java.util.List;
-
 public class PlanActivity extends AppCompatActivity {
 
     public RecyclerView recyclerView;
+    private ZooPlan zooPlan;
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,13 +40,14 @@ public class PlanActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         // get exhibit lists passed from previous activity
-        ZooPlan zooPlan = (ZooPlan) getIntent().getSerializableExtra(ZOOPLANKEY);
+        zooPlan = (ZooPlan) getIntent().getSerializableExtra(ZOOPLANKEY);
 
         adapter.setExhibitList(zooPlan.exhibits);
     }
 
     public void onStartDirectionClicked(View view) {
         Intent intent = new Intent(this, NavigationPageActivity.class);
+        intent.putExtra(ZOOPLANKEY, zooPlan);
         startActivity(intent);
     }
 
