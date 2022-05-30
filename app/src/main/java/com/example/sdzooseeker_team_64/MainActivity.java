@@ -49,7 +49,9 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 
         //marin
         saveClass();
-        loadList(exhibitList.size());
+        int currentSize;
+        currentSize = MyPrefs.getTheLength(App.getContext(), "exhibitListSize");
+        loadList(currentSize);
 
         // Setup View Component References
         searchListView = findViewById(R.id.search_list);
@@ -132,15 +134,15 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         MyPrefs.setLastActivity(App.getContext(), "lastActivity", this.getClass().getName());
     }
     public void loadList(int length) {
-//        for(int i = 0; i < length; i++) {
-//            exhibitList.add(MyPrefs.getTheString(App.getContext(), "exhibitList"+i));
-//        }
+        for(int i = 0; i < length; i++) {
+            exhibitList.add(MyPrefs.getTheExhibit(App.getContext(), "exhibitList"+i, zooGraph));
+        }
     }
     public void saveList(List<ZooGraph.Exhibit> temp) {
-//        for(int i = 0; i < temp.size(); i++) {
-//            MyPrefs.saveString(App.getContext(), "exhibitList", temp.get(i), i);
-//        }
-//        MyPrefs.saveLength(App.getContext(), "exhibitListSize",temp.size());
+        for(int i = 0; i < temp.size(); i++) {
+            MyPrefs.saveString(App.getContext(), "exhibitList", temp.get(i).id, i);
+        }
+        MyPrefs.saveLength(App.getContext(), "exhibitListSize",temp.size());
     }
 
     private boolean ensurePermissions() {
