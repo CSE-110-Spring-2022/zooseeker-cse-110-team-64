@@ -63,7 +63,34 @@ public class MainActivity extends AppCompatActivity {
         /* Permissions Setup */
         if (permissionChecker.ensurePermissions()) return;
 
+        //clear whole list using a delete list button
+        Button clearList = findViewById(R.id.clear_list_btn);
+        clearList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectedExhibitList.clear();
+                saveList(selectedExhibitList);
+                String number = Integer.toString(selectedExhibitList.size());
+                countView.setText(number);
+                selectedListAdapter.notifyDataSetChanged();
+            }
+        });
+
+        //clear item by clicking
+
+        selectedListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ZooGraph.Exhibit item = (ZooGraph.Exhibit)adapterView.getItemAtPosition(i);
+                selectedExhibitList.remove(item);
+                saveList(selectedExhibitList);
+                String number = Integer.toString(selectedExhibitList.size());
+                countView.setText(number);
+                selectedListAdapter.notifyDataSetChanged();
+            }
+        });
     }
+
 
     public void setupSearchListView() {
         // Setup view data source
@@ -118,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onCreateOptionsMenu(menu);
     }
+
 
     void onPlanClicked(View view) {
         Intent intent = new Intent(this, PlanActivity.class);
