@@ -1,7 +1,5 @@
 package com.example.sdzooseeker_team_64;
 
-import static com.example.sdzooseeker_team_64.ZooPlan.ZOOPLANKEY;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;

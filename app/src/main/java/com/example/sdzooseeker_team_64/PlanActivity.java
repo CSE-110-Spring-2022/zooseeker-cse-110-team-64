@@ -1,7 +1,5 @@
 package com.example.sdzooseeker_team_64;
 
-import static com.example.sdzooseeker_team_64.ZooPlan.ZOOPLANKEY;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -56,7 +54,6 @@ public class PlanActivity extends AppCompatActivity {
 
     public void onStartDirectionClicked(View view) {
         Intent intent = new Intent(this, NavigationPageActivity.class);
-        intent.putExtra(ZOOPLANKEY, zooPlan);
         startActivity(intent);
     }
 

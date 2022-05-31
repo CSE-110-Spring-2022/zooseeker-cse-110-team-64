@@ -15,12 +15,9 @@ import java.util.Objects;
 
 public class ZooPlan implements Serializable {
     public List<ZooGraph.Exhibit> exhibits;
-    public LinkedHashMap<ZooGraph.Exhibit, Double> exhibitsInLinkedHashMap;
     public ZooGraph zooGraph;
     private int currentStartExhibitIndex;
     private int currentEndExhibitIndex;
-
-    public static String ZOOPLANKEY = "ZOO_PLAN";
 
     private ZooGraph.Exhibit getEntranceExitGate() { return zooGraph.getExhibitWithId("entrance_exit_gate"); }
 
@@ -70,12 +67,9 @@ public class ZooPlan implements Serializable {
         return isSuccessful;
     }
 
-    public boolean removeExhibit(ZooGraph.Exhibit exhibit) {
-        return exhibits.remove(exhibit); // no need to sort
-    }
-
     public void skipThisExhibit() {
         // remove the currentEndExhibit and re-plan the ones after it
+        exhibits.remove(currentEndExhibitIndex);
 
     }
 
@@ -93,7 +87,7 @@ public class ZooPlan implements Serializable {
         return path;
     }
 
-    public void sortExhibits() {
+    public LinkedHashMap<ZooGraph.Exhibit, Double> sortExhibits() {
         Map<ZooGraph.Exhibit, Double> unsorted = new HashMap<>();
         ZooGraph.Exhibit gate = zooGraph.getExhibitWithId("entrance_exit_gate");
         for(ZooGraph.Exhibit exhibit : exhibits) {
@@ -122,7 +116,7 @@ public class ZooPlan implements Serializable {
                     sortedExhibitsInLinkedHashMap.put(x.getKey(), x.getValue());
                 });
         exhibits = sortedExhibits;
-        exhibitsInLinkedHashMap = sortedExhibitsInLinkedHashMap;
+        return sortedExhibitsInLinkedHashMap;
     }
 
     public boolean goToNextExhibit() {

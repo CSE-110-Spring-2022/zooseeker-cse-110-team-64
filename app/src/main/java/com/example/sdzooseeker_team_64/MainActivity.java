@@ -1,7 +1,5 @@
 package com.example.sdzooseeker_team_64;
 
-import static com.example.sdzooseeker_team_64.ZooPlan.ZOOPLANKEY;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -124,9 +122,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void onPlanClicked(View view) {
-        //zooPlan = new ZooPlan(zooGraph, exhibitList);
         Intent intent = new Intent(this, PlanActivity.class);
-        //intent.putExtra(ZOOPLANKEY, zooPlan);
         startActivity(intent);
     }
 
