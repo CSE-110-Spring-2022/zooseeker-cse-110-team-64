@@ -53,10 +53,6 @@ public class ZooGraph implements Serializable {
             return name;
         }
 
-        public String getID(){
-            return this.id;
-        }
-
     }
 
     public static class Trail implements Serializable {
