@@ -123,6 +123,11 @@ public class NavigationPageActivity extends AppCompatActivity {
         directionSwitch = findViewById(R.id.direction_switch);
 
         updateButtonStates();
+
+
+        //Using alert example. You xn use this showAlert function in this way
+        Utility.popAlert(this, "Off-track. Replan?");
+
     }
 
     public void onPreviousBtnClicked(View view) {
@@ -527,5 +532,8 @@ public class NavigationPageActivity extends AppCompatActivity {
     private void saveStatus(int i) {
         MyPrefs.saveLength(App.getContext(), "status", i);
     }
+
+
+
 
 }
