@@ -68,8 +68,8 @@ public class MainActivity extends AppCompatActivity {
         clearList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                deleteListData(selectedExhibitList.size());
                 selectedExhibitList.clear();
-                saveList(selectedExhibitList);
                 String number = Integer.toString(selectedExhibitList.size());
                 countView.setText(number);
                 selectedListAdapter.notifyDataSetChanged();
@@ -169,6 +169,12 @@ public class MainActivity extends AppCompatActivity {
         MyPrefs.saveLength(App.getContext(), "exhibitListSize",exhibits.size());
     }
 
+    public void deleteListData(int length) {
+        for(int i = 0; i < length; i++) {
+            MyPrefs.delete(App.getContext(), "exhibitList"+i);
+        }
+        MyPrefs.saveLength(App.getContext(), "exhibitListSize", 0);
+    }
     private boolean ensurePermissions() {
 
         return permissionChecker.ensurePermissions();
