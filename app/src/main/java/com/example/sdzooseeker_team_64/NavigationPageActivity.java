@@ -1,7 +1,13 @@
 package com.example.sdzooseeker_team_64;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -10,6 +16,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -21,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class NavigationPageActivity extends AppCompatActivity {
+public class NavigationPageActivity extends FragmentActivity implements View.OnClickListener {
 
     // Data
 
@@ -38,6 +45,14 @@ public class NavigationPageActivity extends AppCompatActivity {
     private Button nextButton;
     private Button skipButton;
     private Switch directionSwitch;
+
+    //location
+    private final PermissionChecker permissionChecker = new PermissionChecker(this);
+    private LocationManager locationMangaer = null;
+    private LocationListener locationListener = null;
+    private Button enterButton;
+    private TextView latitudeText;
+    private TextView longitudeText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +87,38 @@ public class NavigationPageActivity extends AppCompatActivity {
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, path);
         directionListView.setAdapter(adapter);
 
+        //location
+        enterButton = findViewById(R.id.enter_btn);
+        enterButton.setOnClickListener(this::onClick);
+        latitudeText = findViewById(R.id.latitude_txt);
+        longitudeText = findViewById(R.id.longitude_txt);
+        locationMangaer = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+
         updateViews();
         saveClass();
     }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onClick(View v) {
+        locationListener = new MyLocationListener();
+        if (permissionChecker.ensurePermissions()) return;
+        locationMangaer.requestLocationUpdates(LocationManager
+                .GPS_PROVIDER, 0, 0f, locationListener);
+    }
+
+    private class MyLocationListener implements LocationListener {
+        @Override
+        public void onLocationChanged(Location loc) {
+            String longitude = "Longitude: " +loc.getLongitude();
+            String latitude = "Latitude: " +loc.getLatitude();
+            latitudeText.setText(latitude);
+            longitudeText.setText(longitude);
+
+        }
+    }
+
 
     private boolean showDetailedDirection() {
         return directionSwitch.isChecked();
