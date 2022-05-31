@@ -20,7 +20,9 @@ public class Dispatcher extends AppCompatActivity {
         } catch (ClassNotFoundException e) {
             activityClass = MainActivity.class;
         }
-
+        if(activityClass != MainActivity.class) {
+            startActivity(new Intent(this, MainActivity.class));
+        }
         startActivity(new Intent(this, activityClass));
     }
 }

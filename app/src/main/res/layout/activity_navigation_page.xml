@@ -7,39 +7,41 @@
     tools:context=".NavigationPageActivity">
 
     <EditText
-        android:id="@+id/longti_edi_text"
-        android:layout_width="141dp"
-        android:layout_height="38dp"
+        android:id="@+id/longitude_txt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="16dp"
         android:ems="10"
-        android:hint="input: longtitude"
+        android:hint="input: longitude"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.066" />
+        app:layout_constraintStart_toEndOf="@+id/latitude_txt"
+        app:layout_constraintTop_toBottomOf="@+id/direction_switch"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <EditText
-        android:id="@+id/lati_edi_text"
-        android:layout_width="134dp"
-        android:layout_height="38dp"
+        android:id="@+id/latitude_txt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="12dp"
         android:ems="10"
         android:hint="input: latitude"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.097"
+        app:layout_constraintEnd_toStartOf="@+id/longitude_txt"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.007" />
+        app:layout_constraintTop_toBottomOf="@+id/direction_switch"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <Button
         android:id="@+id/previous_btn"
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="43dp"
+        android:layout_marginBottom="16dp"
         android:backgroundTint="#8BC34A"
         android:onClick="onPreviousBtnClicked"
         android:text="PREVIOUS"
@@ -49,24 +51,25 @@
 
     <Button
         android:id="@+id/next_btn"
-        android:layout_height="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="43dp"
+        android:layout_marginBottom="16dp"
         android:onClick="onNextBtnClicked"
         android:text="NEXT"
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:backgroundTint="#8BC34A"
-        android:layout_width="wrap_content" />
+        tools:backgroundTint="#8BC34A" />
 
     <ListView
         android:id="@+id/direction_listView"
         android:layout_width="0dp"
-        android:layout_height="450dp"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="18dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:foregroundGravity="center"
         android:text="Turn Left \non Africa Rocks Street"
         android:textAlignment="center"
@@ -75,38 +78,40 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/toTextView" /><![CDATA[
+
+
+        app:layout_constraintTop_toBottomOf="@+id/toTextView" />
+
+
+
+    ]]>
 
     <Button
         android:id="@+id/skip_btn"
         android:layout_width="0dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="53dp"
-        android:layout_marginBottom="43dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/button_states"
         android:backgroundTint="#c71c1c"
         android:text="SKIP"
-        android:textColor="@color/white"
         android:textSize="19dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/next_btn"
         app:layout_constraintStart_toEndOf="@+id/previous_btn" />
-
-
-        app:layout_constraintTop_toBottomOf="@+id/toTextView" />
 
     <TextView
         android:id="@+id/startExhibitTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="30dp"
+        android:layout_marginEnd="12dp"
         android:text="Starting Exhibit"
         android:textAlignment="center"
         android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/toTextView"
         app:layout_constraintEnd_toStartOf="@+id/toTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/toTextView" />
@@ -115,12 +120,12 @@
         android:id="@+id/endExhibitTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="12dp"
         android:layout_marginEnd="16dp"
         android:text="Ending Exhibit"
         android:textAlignment="center"
         android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/toTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/toTextView"
         app:layout_constraintTop_toTopOf="@+id/toTextView" />
@@ -129,25 +134,23 @@
         android:id="@+id/toTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="171dp"
-        android:layout_marginTop="98dp"
-        android:layout_marginEnd="162dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginStart="164dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginEnd="164dp"
         android:text="To"
         android:textSize="32sp"
-        app:layout_constraintBottom_toTopOf="@+id/direction_listView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/direction_switch" />
 
     <Switch
         android:id="@+id/direction_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:minHeight="48dp"
-        android:onClick="directionOnClicked"
+        android:onClick="showDetailedDirectionOnToggled"
         android:showText="false"
         android:text="Show Detailed Direction: "
         android:textOff="brief"
@@ -157,14 +160,12 @@
 
     <Button
         android:id="@+id/enter_btn"
-        android:layout_width="112dp"
-        android:layout_height="35dp"
-        android:text="Enter"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="16dp"
+        android:text="Enter Location"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.23"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.12" />
+        app:layout_constraintTop_toBottomOf="@+id/longitude_txt" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,6 +12,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '11'
+
       # local prperties isssue is fixed with this
       - name: Touch local properties
         run: touch local.properties
