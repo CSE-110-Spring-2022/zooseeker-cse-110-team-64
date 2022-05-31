@@ -73,6 +73,13 @@ public class ZooPlan implements Serializable {
     public void skipThisExhibit(double userLat, double userLng) {
         // remove the currentEndExhibit and re-plan the ones after it
         exhibits.remove(currentEndExhibitIndex);
+        // If going forward on plan, don't change the star/end index because exhibits shift forward after removal
+        // If going backward, decrement both start/end index so that start exhibit is the same, end exhibit goes backward by one
+        if(!goingForward()) {
+            currentStartExhibitIndex--;
+            currentEndExhibitIndex--;
+        }
+
         // Replan the following exhibits according to user location
         // Don't sort first and last one as they are the entry/exit gate
         replanExhibitsWithUserLocation(userLat, userLng, currentEndExhibitIndex, exhibits.size()-2);
