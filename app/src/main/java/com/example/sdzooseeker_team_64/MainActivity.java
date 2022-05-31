@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
 
         /* Permissions Setup */
         if (permissionChecker.ensurePermissions()) return;
-
     }
 
     public void setupSearchListView() {

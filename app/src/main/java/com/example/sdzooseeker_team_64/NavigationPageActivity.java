@@ -65,7 +65,7 @@ public class NavigationPageActivity extends AppCompatActivity {
         nextButton = findViewById(R.id.next_btn);
         skipButton = findViewById(R.id.skip_btn);
         skipButton.setOnClickListener(this::onSkipBtnClicked);
-
+      
         // load sharedpreference for directionSwitch
 
         // get directiontexts
@@ -170,5 +170,8 @@ public class NavigationPageActivity extends AppCompatActivity {
         }
         return exhibitList;
     }
+
+
+
 
 }
