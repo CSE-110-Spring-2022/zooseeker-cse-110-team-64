@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -41,7 +42,8 @@ public class PlanActivity extends AppCompatActivity {
         int currentSize = MyPrefs.getTheLength(App.getContext(), "exhibitListSize");
         zooGraph = new ZooGraph(this);
         zooPlan = new ZooPlan(zooGraph, loadList(currentSize));
-        adapter.setExhibitList(zooPlan.exhibits);
+        LinkedHashMap<ZooGraph.Exhibit, Double> distanceMap = zooPlan.getDistanceMapForPlanSummary();
+        adapter.setExhibitList(zooPlan.exhibits, distanceMap);
 
         // Setup view references
         recyclerView = findViewById(R.id.exhibit_list);

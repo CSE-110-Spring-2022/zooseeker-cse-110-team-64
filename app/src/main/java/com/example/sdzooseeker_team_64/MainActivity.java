@@ -14,7 +14,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Data
     ZooGraph zooGraph;
-    ZooPlan zooPlan;
-    List<ZooGraph.Exhibit> exhibitList;
+    List<ZooGraph.Exhibit> selectedExhibitList;
     ArrayAdapter<ZooGraph.Exhibit> searchListAdapter;
     ArrayAdapter<ZooGraph.Exhibit> selectedListAdapter;
 
@@ -43,12 +41,11 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize zoo graph, extract data from assets
         zooGraph = new ZooGraph(this);
-        exhibitList = new ArrayList<>();
+        selectedExhibitList = new ArrayList<>();
 
         //marin
         saveClass();
-        int currentSize;
-        currentSize = MyPrefs.getTheLength(App.getContext(), "exhibitListSize");
+        int currentSize = MyPrefs.getTheLength(App.getContext(), "exhibitListSize");
         loadList(currentSize);
 
         // Setup View Component References
@@ -59,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Setup View Components
         planButton.setOnClickListener(this::onPlanClicked);
-        countView.setText(Integer.toString(exhibitList.size()));
+        countView.setText(Integer.toString(selectedExhibitList.size()));
         setupSearchListView();
         setupSelectedListView();
 
@@ -77,12 +74,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ZooGraph.Exhibit item = (ZooGraph.Exhibit) adapterView.getItemAtPosition(i);
-                if(exhibitList.contains(item) == true) {
+
+                if(selectedExhibitList.contains(item) == true) {
                     return;
                 } else {
-                    exhibitList.add(item);
-                    saveList(exhibitList);
-                    String number = Integer.toString(exhibitList.size());
+                    selectedExhibitList.add(item);
+                    saveList(selectedExhibitList);
+                    String number = Integer.toString(selectedExhibitList.size());
                     countView.setText(number);
                     selectedListAdapter.notifyDataSetChanged();
                 }
@@ -91,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setupSelectedListView() {
-        selectedListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, exhibitList);
+        selectedListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, selectedExhibitList);
         selectedListView.setAdapter(selectedListAdapter);
     }
 
@@ -129,16 +127,18 @@ public class MainActivity extends AppCompatActivity {
     private void saveClass() {
         MyPrefs.setLastActivity(App.getContext(), "lastActivity", this.getClass().getName());
     }
+
     public void loadList(int length) {
         for(int i = 0; i < length; i++) {
-            exhibitList.add(MyPrefs.getTheExhibit(App.getContext(), "exhibitList"+i, zooGraph));
+            selectedExhibitList.add(MyPrefs.getTheExhibit(App.getContext(), "exhibitList"+i, zooGraph));
         }
     }
-    public void saveList(List<ZooGraph.Exhibit> temp) {
-        for(int i = 0; i < temp.size(); i++) {
-            MyPrefs.saveString(App.getContext(), "exhibitList", temp.get(i).id, i);
+
+    public void saveList(List<ZooGraph.Exhibit> exhibits) {
+        for(int i = 0; i < exhibits.size(); i++) {
+            MyPrefs.saveString(App.getContext(), "exhibitList", exhibits.get(i).id, i);
         }
-        MyPrefs.saveLength(App.getContext(), "exhibitListSize",temp.size());
+        MyPrefs.saveLength(App.getContext(), "exhibitListSize",exhibits.size());
     }
 
     private boolean ensurePermissions() {

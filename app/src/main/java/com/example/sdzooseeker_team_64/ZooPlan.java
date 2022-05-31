@@ -15,6 +15,7 @@ import java.util.Objects;
 
 public class ZooPlan implements Serializable {
     public List<ZooGraph.Exhibit> exhibits;
+    private LinkedHashMap<ZooGraph.Exhibit, Double> exhibitDistanceMap; // Don't use it other than in plan activity
     public ZooGraph zooGraph;
     private int currentStartExhibitIndex;
     private int currentEndExhibitIndex;
@@ -70,7 +71,7 @@ public class ZooPlan implements Serializable {
     public void skipThisExhibit() {
         // remove the currentEndExhibit and re-plan the ones after it
         exhibits.remove(currentEndExhibitIndex);
-
+        // TODO: How to Replan?
     }
 
     private GraphPath<String, IdentifiedWeightedEdge> findPathBetween(ZooGraph.Exhibit start, ZooGraph.Exhibit end) {
@@ -87,7 +88,7 @@ public class ZooPlan implements Serializable {
         return path;
     }
 
-    public LinkedHashMap<ZooGraph.Exhibit, Double> sortExhibits() {
+    public void sortExhibits() {
         Map<ZooGraph.Exhibit, Double> unsorted = new HashMap<>();
         ZooGraph.Exhibit gate = zooGraph.getExhibitWithId("entrance_exit_gate");
         for(ZooGraph.Exhibit exhibit : exhibits) {
@@ -116,7 +117,7 @@ public class ZooPlan implements Serializable {
                     sortedExhibitsInLinkedHashMap.put(x.getKey(), x.getValue());
                 });
         exhibits = sortedExhibits;
-        return sortedExhibitsInLinkedHashMap;
+        exhibitDistanceMap = sortedExhibitsInLinkedHashMap;
     }
 
     public boolean goToNextExhibit() {
@@ -338,6 +339,11 @@ public class ZooPlan implements Serializable {
         }
 
         return path;
+    }
+
+    public LinkedHashMap<ZooGraph.Exhibit, Double> getDistanceMapForPlanSummary() {
+        exhibitDistanceMap.remove(getEntranceExitGate());
+        return exhibitDistanceMap;
     }
 
 }
