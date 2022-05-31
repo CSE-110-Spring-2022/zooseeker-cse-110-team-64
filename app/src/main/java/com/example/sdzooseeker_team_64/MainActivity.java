@@ -68,9 +68,9 @@ public class MainActivity extends AppCompatActivity {
         clearList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                exhibitList.clear();
-                saveList(exhibitList);
-                String number = Integer.toString(exhibitList.size());
+                selectedExhibitList.clear();
+                saveList(selectedExhibitList);
+                String number = Integer.toString(selectedExhibitList.size());
                 countView.setText(number);
                 selectedListAdapter.notifyDataSetChanged();
             }
@@ -82,9 +82,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ZooGraph.Exhibit item = (ZooGraph.Exhibit)adapterView.getItemAtPosition(i);
-                exhibitList.remove(item);
-                saveList(exhibitList);
-                String number = Integer.toString(exhibitList.size());
+                selectedExhibitList.remove(item);
+                saveList(selectedExhibitList);
+                String number = Integer.toString(selectedExhibitList.size());
                 countView.setText(number);
                 selectedListAdapter.notifyDataSetChanged();
             }
