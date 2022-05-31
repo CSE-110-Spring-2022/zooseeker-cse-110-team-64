@@ -1,5 +1,7 @@
 package com.example.sdzooseeker_team_64;
 
+import android.util.Pair;
+
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -11,7 +13,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.PriorityQueue;
 
 public class ZooPlan implements Serializable {
     public List<ZooGraph.Exhibit> exhibits;
@@ -33,7 +35,7 @@ public class ZooPlan implements Serializable {
         this.zooGraph = zooGraph;
         this.exhibits = exhibits;
 
-        sortExhibits();
+        sortAllExhibits();
 
         addGateToStartAndBack();
 
@@ -64,14 +66,16 @@ public class ZooPlan implements Serializable {
     public boolean addExhibit(ZooGraph.Exhibit exhibit) {
         boolean isSuccessful = exhibits.add(exhibit);
         // sort all exhibits
-        sortExhibits();
+        sortAllExhibits();
         return isSuccessful;
     }
 
-    public void skipThisExhibit() {
+    public void skipThisExhibit(double userLat, double userLng) {
         // remove the currentEndExhibit and re-plan the ones after it
         exhibits.remove(currentEndExhibitIndex);
-        // TODO: How to Replan?
+        // Replan the following exhibits according to user location
+        // Don't sort first and last one as they are the entry/exit gate
+        replanExhibitsWithUserLocation(userLat, userLng, currentEndExhibitIndex, exhibits.size()-2);
     }
 
     private GraphPath<String, IdentifiedWeightedEdge> findPathBetween(ZooGraph.Exhibit start, ZooGraph.Exhibit end) {
@@ -88,7 +92,50 @@ public class ZooPlan implements Serializable {
         return path;
     }
 
-    public void sortExhibits() {
+    // Both fromIndex and toIndex are inclusive!
+    public void replanExhibitsWithUserLocation(double userLat, double userLng, int fromIndex, int toIndex) {
+        if(fromIndex == toIndex || fromIndex == 0) { return; }
+
+        // get all location for all exhibits within range
+        // Notice exhibits with group_id don't have lat/lng
+        Map<Double, ZooGraph.Exhibit> exhibitsToSort = new HashMap<>(); // key value is lat/lng diff
+        for(int i = fromIndex; i <= toIndex; i++) {
+            // Get direct distance in lat/lng
+            ZooGraph.Exhibit exhibit = exhibits.get(i);
+            // get lat/lng of exhibit
+            boolean useGroupLocation = (exhibit != null);
+            double exhibitLat = useGroupLocation ?
+                    zooGraph.getExhibitWithId(exhibit.groupId).lat : exhibit.lat;
+            double exhibitLng = useGroupLocation ?
+                    zooGraph.getExhibitWithId(exhibit.groupId).lng : exhibit.lng;
+            // calculate location diff
+            double latDiff = userLat - exhibitLat;
+            double lngDiff = userLng - exhibitLng;
+            double locationDiff = Math.sqrt(Math.pow(latDiff, 2) + Math.pow(lngDiff, 2));
+
+            exhibitsToSort.put(locationDiff, exhibit);
+        }
+
+        // sort exhibits
+        List<ZooGraph.Exhibit> sortedExhibits = new ArrayList<>();
+        exhibitsToSort.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByKey())
+                .forEachOrdered(x -> sortedExhibits.add(x.getValue()));
+
+        // apply exhibits order
+        // remove unsorted exhibits
+        int numOfExhibitsToRemove = toIndex - fromIndex + 1;
+        for(int i = 0; i < numOfExhibitsToRemove; i++) {
+            exhibits.remove(fromIndex);
+        }
+        // add sorted exhibits back
+        for(int i = fromIndex; i <= toIndex; i++) {
+            exhibits.add(sortedExhibits.get(i - fromIndex));
+        }
+    }
+
+    private void sortAllExhibits() {
         Map<ZooGraph.Exhibit, Double> unsorted = new HashMap<>();
         ZooGraph.Exhibit gate = zooGraph.getExhibitWithId("entrance_exit_gate");
         for(ZooGraph.Exhibit exhibit : exhibits) {
@@ -172,6 +219,11 @@ public class ZooPlan implements Serializable {
         // For it to be possible to go prev, the user either is going forward on the plan,
         // or going backward and the current destination is not the first exhibit.
         return goingForward() | (currentEndExhibitIndex != 0);
+    }
+
+    public boolean canSkip() {
+        return exhibits.size() > 3 &&
+                !exhibits.get(currentEndExhibitIndex).equals(getEntranceExitGate());
     }
 
     public ArrayList<String> getCurrentDetailedPath() {

@@ -128,6 +128,7 @@ public class NavigationPageActivity extends AppCompatActivity {
     private void updateButtonStates() {
         nextButton.setText(zooPlan.canGoNext() ? "NEXT" : "FINISH");
         prevButton.setAlpha(zooPlan.canGoPrev() ? 1 : 0);
+        skipButton.setAlpha(zooPlan.canSkip() ? 1 : 0);
     }
 
     public void onPreviousBtnClicked(View view) {
@@ -147,7 +148,8 @@ public class NavigationPageActivity extends AppCompatActivity {
     }
 
     public void onSkipBtnClicked(View view) {
-        zooPlan.skipThisExhibit();
+        // TODO: Pass in user location data
+//        zooPlan.skipThisExhibit();
         updateViews();
     }
 
