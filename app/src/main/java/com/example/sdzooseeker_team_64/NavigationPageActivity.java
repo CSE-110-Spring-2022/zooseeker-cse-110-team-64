@@ -2,12 +2,10 @@ package com.example.sdzooseeker_team_64;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -16,26 +14,17 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
-
-import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
-public class NavigationPageActivity extends FragmentActivity implements View.OnClickListener {
+public class NavigationPageActivity extends AppCompatActivity {
 
     // Data
-
     ZooGraph zooGraph;
     ZooPlan zooPlan;
     ArrayList<String> path;
-    ArrayAdapter<String> adapter;
+    ArrayAdapter<String> directionListAdapter;
 
     // View references
     private ListView directionListView;
@@ -84,8 +73,8 @@ public class NavigationPageActivity extends FragmentActivity implements View.OnC
                 zooPlan.getCurrentBriefPath() : zooPlan.getCurrentBriefPath();
 
         // show direction text in list
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, path);
-        directionListView.setAdapter(adapter);
+        directionListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, path);
+        directionListView.setAdapter(directionListAdapter);
 
         //location
         enterButton = findViewById(R.id.enter_btn);
@@ -100,7 +89,6 @@ public class NavigationPageActivity extends FragmentActivity implements View.OnC
     }
 
     @SuppressLint("MissingPermission")
-    @Override
     public void onClick(View v) {
         locationListener = new MyLocationListener();
         if (permissionChecker.ensurePermissions()) return;
@@ -134,7 +122,7 @@ public class NavigationPageActivity extends FragmentActivity implements View.OnC
         path.clear();
         path.addAll(showDetailedDirection() ?
                 zooPlan.getCurrentDetailedPath() : zooPlan.getCurrentBriefPath());
-        adapter.notifyDataSetChanged();
+        directionListAdapter.notifyDataSetChanged();
     }
 
     private void updateButtonStates() {
