@@ -19,7 +19,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 public class ZooGraph implements Serializable {
     public static class Exhibit implements Serializable {
@@ -52,6 +51,10 @@ public class ZooGraph implements Serializable {
 
         public String toString() {
             return name;
+        }
+
+        public String getID(){
+            return this.id;
         }
 
     }

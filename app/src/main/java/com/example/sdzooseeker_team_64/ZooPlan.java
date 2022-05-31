@@ -22,6 +22,13 @@ public class ZooPlan implements Serializable {
 
     private ZooGraph.Exhibit getEntranceExitGate() { return zooGraph.getExhibitWithId("entrance_exit_gate"); }
 
+    @Override
+    public String toString() {
+        return "ZooPlan{" +
+                "exhibits=" + exhibits +
+                '}';
+    }
+
     public ZooPlan(ZooGraph zooGraph, List<ZooGraph.Exhibit> exhibits) {
         this.zooGraph = zooGraph;
         this.exhibits = exhibits;

@@ -1,7 +1,10 @@
 package com.example.sdzooseeker_team_64;
 
+import static com.example.sdzooseeker_team_64.ZooPlan.ZOOPLANKEY;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -9,7 +12,6 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.jgrapht.Graph;
@@ -63,8 +65,6 @@ public class NavigationPageActivity extends AppCompatActivity {
         else {
             endExhibitIndex = startExhibitIndex - 1;
         }
-        //cao
-        exhibitsList.add("entrance_exit_gate");
 
         // Prepare for UI
         listView = findViewById(R.id.direction_listView);
@@ -72,8 +72,17 @@ public class NavigationPageActivity extends AppCompatActivity {
         endExhibitTextView = findViewById(R.id.endExhibitTextView);
 
         //convert exhibitList string to ID
+        /*
         for(int i = 0; i < MyPrefs.getTheLength(App.getContext(), "serial_size"); i++) {
             exhibitsList.add(MyPrefs.getTheString(App.getContext(), "serial"+i));
+        }*/
+        ZooPlan zooPlan = (ZooPlan) getIntent().getSerializableExtra(ZOOPLANKEY);
+        Log.i("ZOOPLAN", String.format("ZooPlan: %s", zooPlan));
+
+        if(zooPlan != null) {
+            for (var e : zooPlan.exhibits) {
+                exhibitsList.add(e.getID());
+            }
         }
 
         // setup detailed and brief path
