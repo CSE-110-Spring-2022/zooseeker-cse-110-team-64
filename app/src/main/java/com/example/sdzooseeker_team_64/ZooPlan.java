@@ -105,7 +105,7 @@ public class ZooPlan implements Serializable {
 
     // Both fromIndex and toIndex are inclusive!
     public void replanExhibitsWithUserLocation(double userLat, double userLng, int fromIndex, int toIndex) {
-        if(fromIndex == toIndex || fromIndex == 0) { return;}
+        if(fromIndex == toIndex || fromIndex == 0) { return; }
 
         // get all location for all exhibits within range
         // Notice exhibits with group_id don't have lat/lng
@@ -125,6 +125,7 @@ public class ZooPlan implements Serializable {
             double locationDiff = Math.sqrt(Math.pow(latDiff, 2) + Math.pow(lngDiff, 2));
             exhibitsToSort.put(locationDiff, exhibit);
         }
+
         // sort exhibits
         List<ZooGraph.Exhibit> sortedExhibits = new ArrayList<>();
         exhibitsToSort.entrySet()

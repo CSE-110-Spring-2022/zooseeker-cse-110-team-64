@@ -3,7 +3,6 @@ package com.example.sdzooseeker_team_64;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -19,26 +18,17 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
-
-import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 public class NavigationPageActivity extends AppCompatActivity {
 
     // Data
-
     ZooGraph zooGraph;
     ZooPlan zooPlan;
     ArrayList<String> path;
-    ArrayAdapter<String> adapter;
+    ArrayAdapter<String> directionListAdapter;
 
     // View references
     private ListView directionListView;
@@ -82,7 +72,7 @@ public class NavigationPageActivity extends AppCompatActivity {
         nextButton = findViewById(R.id.next_btn);
         skipButton = findViewById(R.id.skip_btn);
         skipButton.setOnClickListener(this::onSkipBtnClicked);
-
+      
         // load sharedpreference for directionSwitch
 
         // get directiontexts
@@ -90,8 +80,8 @@ public class NavigationPageActivity extends AppCompatActivity {
                 zooPlan.getCurrentBriefPath() : zooPlan.getCurrentBriefPath();
 
         // show direction text in list
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, path);
-        directionListView.setAdapter(adapter);
+        directionListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, path);
+        directionListView.setAdapter(directionListAdapter);
 
         //location
         enterButton = findViewById(R.id.enter_btn);
@@ -161,12 +151,13 @@ public class NavigationPageActivity extends AppCompatActivity {
         path.clear();
         path.addAll(showDetailedDirection() ?
                 zooPlan.getCurrentDetailedPath() : zooPlan.getCurrentBriefPath());
-        adapter.notifyDataSetChanged();
+        directionListAdapter.notifyDataSetChanged();
     }
 
     private void updateButtonStates() {
         nextButton.setText(zooPlan.canGoNext() ? "NEXT" : "FINISH");
         prevButton.setAlpha(zooPlan.canGoPrev() ? 1 : 0);
+        skipButton.setAlpha(zooPlan.canSkip() ? 1 : 0);
     }
 
     public void onPreviousBtnClicked(View view) {

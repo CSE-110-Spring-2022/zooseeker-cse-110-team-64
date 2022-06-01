@@ -42,8 +42,8 @@
 
     <Button
         android:id="@+id/plan_btn"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="150dp"
         android:layout_marginEnd="150dp"
         android:layout_marginBottom="16dp"
@@ -53,22 +53,27 @@
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" /><![CDATA[
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+
+
+
+
+
+    ]]>
 
     <Button
         android:id="@+id/clear_list_btn"
-        android:layout_width="86dp"
-        android:layout_height="51dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:text="Clear List"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.261"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.98" />
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/exhibit_count"
