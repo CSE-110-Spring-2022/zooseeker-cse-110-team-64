@@ -61,6 +61,8 @@ public class NavigationPageActivity extends AppCompatActivity {
         int currentSize = MyPrefs.getTheLength(App.getContext(), "exhibitListSize");
         zooGraph = new ZooGraph(this);
         zooPlan = new ZooPlan(zooGraph, loadList(currentSize));
+        zooPlan.setStartIndex(MyPrefs.getTheLength(App.getContext(), "startIndex"));
+        zooPlan.setEndIndex(MyPrefs.getLengthDefaultOne(App.getContext(), "endIndex"));
         path = new ArrayList<>();
 
         // Setup view references
@@ -171,6 +173,7 @@ public class NavigationPageActivity extends AppCompatActivity {
         if(zooPlan.canGoNext()) {
             zooPlan.goToNextExhibit();
         } else {
+            zooPlan.saveIndex(0,1);
             this.finish();
         }
         updateViews();
@@ -207,9 +210,13 @@ public class NavigationPageActivity extends AppCompatActivity {
                 .setTitle("Alert:")
                 .setMessage(msg)
                 .setPositiveButton("Yes", (dialog,id)->{
-                    String str = zooPlan.replanWithUserLocation(latitude, longitude,
-                            zooPlan.getCurrentEndIndex());
-                    popAnotherAlert(str);
+                    if(zooPlan.goingForward()) {
+                        zooPlan.replanExhibitsWithUserLocation(latitude, longitude, zooPlan.getCurrentEndIndex(), zooPlan.exhibits.size() - 2);
+                    }
+                    else {
+                        zooPlan.replanExhibitsWithUserLocation(latitude, longitude,
+                                1, zooPlan.getCurrentEndIndex());
+                    }
                     updateViews();
                     dialog.cancel();
                 })
@@ -221,20 +228,7 @@ public class NavigationPageActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    public void popAnotherAlert(String msg){
-        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-        alertBuilder
-                .setTitle("Alert:")
-                .setMessage(msg)
-                .setPositiveButton("Yes", (dialog,id)->{
-                    dialog.cancel();
-                })
-                .setNegativeButton("No", (dialog,id)->{
-                    dialog.cancel();
-                })
-                .setCancelable(true);
-        AlertDialog alertDialog = alertBuilder.create();
-        alertDialog.show();
-    }
+
+
 
 }
