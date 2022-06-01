@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 
 @RunWith(AndroidJUnit4.class)
-public class BriefAndDetailedDirection {
+public class BriefAndDetailedDirectionTest {
 
     @Test
     public void testGettingBriefDirection() {

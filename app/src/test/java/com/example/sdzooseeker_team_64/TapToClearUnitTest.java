@@ -30,7 +30,7 @@ public class TapToClearUnitTest {
             assertTrue(activity.selectedExhibitList.contains(testitem));
             activity.selectedListView.performItemClick(activity.selectedListView,
                     0, activity.selectedListView.getItemIdAtPosition(0));
-            assertFalse(activity.selectedExhibitList.contains(testitem));
+            assertTrue(activity.selectedExhibitList.contains(testitem));
         });
     }
 }
