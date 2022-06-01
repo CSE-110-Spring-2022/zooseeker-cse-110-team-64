@@ -3,6 +3,7 @@ package com.example.sdzooseeker_team_64;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -49,6 +50,7 @@ public class NavigationPageActivity extends AppCompatActivity {
     private Switch gpsSwitch;
     double latitude;
     double longitude;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,6 +176,8 @@ public class NavigationPageActivity extends AppCompatActivity {
             zooPlan.goToNextExhibit();
         } else {
             zooPlan.saveIndex(0,1);
+            intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
             this.finish();
         }
         updateViews();
