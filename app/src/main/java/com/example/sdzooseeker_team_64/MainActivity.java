@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     ListView searchListView;
     ListView selectedListView;
     Button planButton;
+    Button clearListButton;
     TextView countView;
 
     // location permission
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         searchListView = findViewById(R.id.search_list);
         selectedListView = findViewById(R.id.selected_list);
         planButton = findViewById(R.id.plan_btn);
+        clearListButton = findViewById(R.id.clear_list_btn);
         countView = findViewById(R.id.exhibit_count);
 
         // Setup View Components
@@ -92,8 +94,7 @@ public class MainActivity extends AppCompatActivity {
         selectedListView.setAdapter(selectedListAdapter);
 
         //clear whole list using a delete list button
-        Button clearList = findViewById(R.id.clear_list_btn);
-        clearList.setOnClickListener(new View.OnClickListener() {
+        clearListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 selectedExhibitList.clear();
