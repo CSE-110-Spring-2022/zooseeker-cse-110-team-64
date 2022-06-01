@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     ListView searchListView;
     ListView selectedListView;
     Button planButton;
+    Button clearListButton;
     TextView countView;
 
     // location permission
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         searchListView = findViewById(R.id.search_list);
         selectedListView = findViewById(R.id.selected_list);
         planButton = findViewById(R.id.plan_btn);
+        clearListButton = findViewById(R.id.clear_list_btn);
         countView = findViewById(R.id.exhibit_count);
 
         // Setup View Components
@@ -91,9 +93,8 @@ public class MainActivity extends AppCompatActivity {
         selectedListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, selectedExhibitList);
         selectedListView.setAdapter(selectedListAdapter);
 
-        //clear whole list using a clear list button
-        Button clearList = findViewById(R.id.clear_list_btn);
-        clearList.setOnClickListener(new View.OnClickListener() {
+        //clear whole list using a delete list button
+        clearListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 selectedExhibitList.clear();
@@ -169,6 +170,12 @@ public class MainActivity extends AppCompatActivity {
         MyPrefs.saveLength(App.getContext(), "exhibitListSize",exhibits.size());
     }
 
+    public void deleteListData(int length) {
+        for(int i = 0; i < length; i++) {
+            MyPrefs.delete(App.getContext(), "exhibitList"+i);
+        }
+        MyPrefs.saveLength(App.getContext(), "exhibitListSize", 0);
+    }
     private boolean ensurePermissions() {
 
         return permissionChecker.ensurePermissions();
