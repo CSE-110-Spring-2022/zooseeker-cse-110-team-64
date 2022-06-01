@@ -1,6 +1,7 @@
 package com.example.sdzooseeker_team_64;
 
 import android.util.Pair;
+import android.widget.Toast;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -21,6 +22,8 @@ public class ZooPlan implements Serializable {
     public ZooGraph zooGraph;
     private int currentStartExhibitIndex;
     private int currentEndExhibitIndex;
+    double Degree_latitude_in_ft = 363843.57;
+    double Degree_longitude_in_ft = 307515.50;
 
     private ZooGraph.Exhibit getEntranceExitGate() { return zooGraph.getExhibitWithId("entrance_exit_gate"); }
 
@@ -57,6 +60,14 @@ public class ZooPlan implements Serializable {
         return exhibits.get(currentEndExhibitIndex);
     }
 
+    public int getCurrentStartIndex() {
+        return currentStartExhibitIndex;
+    }
+
+    public int getCurrentEndIndex() {
+        return currentEndExhibitIndex;
+    }
+
     public void addGateToStartAndBack() {
         // add entrance_exit_gate to start and back
         exhibits.add(0, getEntranceExitGate());
@@ -73,6 +84,13 @@ public class ZooPlan implements Serializable {
     public void skipThisExhibit(double userLat, double userLng) {
         // remove the currentEndExhibit and re-plan the ones after it
         exhibits.remove(currentEndExhibitIndex);
+        // If going forward on plan, don't change the star/end index because exhibits shift forward after removal
+        // If going backward, decrement both start/end index so that start exhibit is the same, end exhibit goes backward by one
+        if(!goingForward()) {
+            currentStartExhibitIndex--;
+            currentEndExhibitIndex--;
+        }
+
         // Replan the following exhibits according to user location
         // Don't sort first and last one as they are the entry/exit gate
         replanExhibitsWithUserLocation(userLat, userLng, currentEndExhibitIndex, exhibits.size()-2);
@@ -87,8 +105,8 @@ public class ZooPlan implements Serializable {
 
         path = DijkstraShortestPath.
                 findPathBetween(zooGraph.graph,
-                                useGroupIdForStart ? start.groupId : start.id,
-                                useGroupIdForEnd ? end.groupId : end.id);
+                        useGroupIdForStart ? start.groupId : start.id,
+                        useGroupIdForEnd ? end.groupId : end.id);
         return path;
     }
 
@@ -103,7 +121,7 @@ public class ZooPlan implements Serializable {
             // Get direct distance in lat/lng
             ZooGraph.Exhibit exhibit = exhibits.get(i);
             // get lat/lng of exhibit
-            boolean useGroupLocation = (exhibit != null);
+            boolean useGroupLocation = (exhibit.groupId != null);
             double exhibitLat = useGroupLocation ?
                     zooGraph.getExhibitWithId(exhibit.groupId).lat : exhibit.lat;
             double exhibitLng = useGroupLocation ?
@@ -112,7 +130,6 @@ public class ZooPlan implements Serializable {
             double latDiff = userLat - exhibitLat;
             double lngDiff = userLng - exhibitLng;
             double locationDiff = Math.sqrt(Math.pow(latDiff, 2) + Math.pow(lngDiff, 2));
-
             exhibitsToSort.put(locationDiff, exhibit);
         }
 
@@ -182,7 +199,7 @@ public class ZooPlan implements Serializable {
             }
             return true;
         } else {
-           return false;
+            return false;
         }
     }
 
@@ -231,7 +248,7 @@ public class ZooPlan implements Serializable {
 
         GraphPath<String, IdentifiedWeightedEdge> graphPath =
                 findPathBetween(exhibits.get(currentStartExhibitIndex),
-                                exhibits.get(currentEndExhibitIndex));
+                        exhibits.get(currentEndExhibitIndex));
 
         Graph<String, IdentifiedWeightedEdge> g = zooGraph.graph;
 
@@ -396,6 +413,94 @@ public class ZooPlan implements Serializable {
     public LinkedHashMap<ZooGraph.Exhibit, Double> getDistanceMapForPlanSummary() {
         exhibitDistanceMap.remove(getEntranceExitGate());
         return exhibitDistanceMap;
+    }
+    public List<ZooGraph.Exhibit> getUnvisitedExhibits() {
+        List<ZooGraph.Exhibit> list = new ArrayList<>();
+        if(goingForward()) {
+            for(int i = currentEndExhibitIndex; i < exhibits.size()-1; i++) {
+                list.add(exhibits.get(i));
+            }
+        }
+        else {
+            for(int i = currentEndExhibitIndex; i > 0; i--) {
+                list.add(exhibits.get(i));
+            }
+        }
+        return list;
+    }
+    public boolean checkOffTrack(double lat, double lng) {
+        double Base = 100;
+        double firstWeight = 0;
+        boolean flag = false;
+        List<ZooGraph.Exhibit> list = getUnvisitedExhibits();
+        Map<ZooGraph.Exhibit, Double> map = new HashMap<>();
+        for (ZooGraph.Exhibit ex : list) {
+            if(ex.kind == "gate") {
+                continue;
+            }
+            double d_lat = Math.abs(lat - ex.lat);
+            double d_lng = Math.abs(lng - ex.lng);
+            double d_ft_v = d_lat * Degree_latitude_in_ft;
+            double d_ft_h = d_lng * Degree_longitude_in_ft;
+            double d_ft = Math.sqrt(Math.pow(d_ft_h, 2) + Math.pow(d_ft_v, 2));
+            double weight = Base * Math.ceil(d_ft / Base);
+            if (firstWeight == 0) {
+                firstWeight = weight;
+            } else {
+                if (weight < firstWeight) {
+                    flag = true;
+                    return flag;
+                }
+            }
+            map.put(ex, weight);
+        }
+        return flag;
+    }
+
+    public String replanWithUserLocation(double userLat, double userLng, int toIndex) {
+        String str = "Original distance:";
+        double Base = 100;
+        if(toIndex == exhibits.size()-1) { return str;}
+        // get all location for all exhibits within range
+        // Notice exhibits with group_id don't have lat/lng
+        Map<Double, ZooGraph.Exhibit> exhibitsToSort = new HashMap<>(); // key value is lat/lng diff
+        for(int i = toIndex; i < exhibits.size()-1; i++) {
+            // Get direct distance in lat/lng
+            ZooGraph.Exhibit exhibit = exhibits.get(i);
+            // get lat/lng of exhibit
+            boolean useGroupLocation = (exhibit.groupId != null);
+            double exhibitLat = useGroupLocation ?
+                    zooGraph.getExhibitWithId(exhibit.groupId).lat : exhibit.lat;
+            double exhibitLng = useGroupLocation ?
+                    zooGraph.getExhibitWithId(exhibit.groupId).lng : exhibit.lng;
+            double d_lat = Math.abs(userLat - exhibitLat);
+            double d_lng = Math.abs(userLng - exhibitLng);
+            double d_ft_v = d_lat * Degree_latitude_in_ft;
+            double d_ft_h = d_lng * Degree_longitude_in_ft;
+            double d_ft = Math.sqrt(Math.pow(d_ft_h, 2) + Math.pow(d_ft_v, 2));
+            double locationDiff = Base * Math.ceil(d_ft / Base);
+            str = str + locationDiff + ", ";
+            exhibitsToSort.put(locationDiff, exhibit);
+        }
+        // sort exhibits
+        List<ZooGraph.Exhibit> sortedExhibits = new ArrayList<>();
+        exhibitsToSort.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByKey())
+                .forEachOrdered(x -> sortedExhibits.add(x.getValue()));
+
+        // apply exhibits order
+        // remove unsorted exhibits
+        int numOfExhibitsToRemove = exhibits.size() - toIndex;
+        for(int i = 0; i < numOfExhibitsToRemove; i++) {
+            exhibits.remove(toIndex);
+        }
+        // add sorted exhibits back
+        for(int i = 0; i < numOfExhibitsToRemove - 1; i++) {
+            exhibits.add(sortedExhibits.get(i));
+        }
+        exhibits.add(getEntranceExitGate());
+        return str;
     }
 
 }
