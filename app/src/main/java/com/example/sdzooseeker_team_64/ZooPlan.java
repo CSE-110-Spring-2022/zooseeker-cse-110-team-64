@@ -10,6 +10,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -93,7 +94,15 @@ public class ZooPlan implements Serializable {
 
         // Replan the following exhibits according to user location
         // Don't sort first and last one as they are the entry/exit gate
-        replanExhibitsWithUserLocation(userLat, userLng, currentEndExhibitIndex, exhibits.size()-2);
+        // check which way to replan
+        if(goingForward()) {
+            // avoid last gate
+            replanExhibitsWithUserLocation(userLat, userLng, currentEndExhibitIndex, exhibits.size()-2);
+        } else {
+            // avoid first gate
+            replanExhibitsWithUserLocation(userLat, userLng, 1, currentStartExhibitIndex);
+        }
+
     }
 
     private GraphPath<String, IdentifiedWeightedEdge> findPathBetween(ZooGraph.Exhibit start, ZooGraph.Exhibit end) {
@@ -147,9 +156,18 @@ public class ZooPlan implements Serializable {
             exhibits.remove(fromIndex);
         }
         // add sorted exhibits back
-        for(int i = fromIndex; i <= toIndex; i++) {
-            exhibits.add(sortedExhibits.get(i - fromIndex));
+        if(goingForward()) {
+            for(int i = fromIndex; i <= toIndex; i++) {
+                // add sequentially, before last gate
+                exhibits.add(exhibits.size() - 2, sortedExhibits.get(i - fromIndex));
+            }
+        } else {
+            Collections.reverse(sortedExhibits);
+            for(int i = fromIndex; i <= toIndex; i++) {
+                exhibits.add(i, sortedExhibits.get(i - fromIndex));
+            }
         }
+
     }
 
     private void sortAllExhibits() {

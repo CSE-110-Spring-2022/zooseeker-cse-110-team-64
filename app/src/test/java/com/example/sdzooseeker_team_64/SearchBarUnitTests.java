@@ -25,7 +25,6 @@ public class SearchBarUnitTests {
     public void testLoadingDatabaseFromExistingFile() {
         Context context = ApplicationProvider.getApplicationContext();
 //        String[] exhibitNames = MainActivity.loadMapFromAssets(context, "sample_vertex_info.json");
-        
 //        assertTrue(exhibitNames.length > 0);
     }
 

@@ -80,7 +80,7 @@ public class SearchBarTests {
 
         // Test if the results count matches expectation.
         final int count = 2;
-        onView(withId(R.id.search_list_view)).check(matches(new TypeSafeMatcher<View>() {
+        onView(withId(R.id.search_list)).check(matches(new TypeSafeMatcher<View>() {
             @Override
             public boolean matchesSafely(View view) {
                 ListView listView = (ListView) view;
@@ -96,14 +96,14 @@ public class SearchBarTests {
         // Test if search results texts match expectation.
         ViewInteraction textView = onView(
                 allOf(withId(android.R.id.text1), withText("Snake"),
-                        withParent(allOf(withId(R.id.search_list_view),
+                        withParent(allOf(withId(R.id.search_list),
                                 withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
                         isDisplayed()));
         textView.check(matches(withText("Snake")));
 
         ViewInteraction textView2 = onView(
                 allOf(withId(android.R.id.text1), withText("Sneasel"),
-                        withParent(allOf(withId(R.id.search_list_view),
+                        withParent(allOf(withId(R.id.search_list),
                                 withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
                         isDisplayed()));
         textView2.check(matches(withText("Sneasel")));
@@ -149,7 +149,7 @@ public class SearchBarTests {
 
         // Test if the results count matches expectation.
         final int count = 1;
-        onView(withId(R.id.search_list_view)).check(matches(new TypeSafeMatcher<View>() {
+        onView(withId(R.id.search_list)).check(matches(new TypeSafeMatcher<View>() {
             @Override
             public boolean matchesSafely(View view) {
                 ListView listView = (ListView) view;
@@ -165,7 +165,7 @@ public class SearchBarTests {
         // Test if search results texts match expectation.
         ViewInteraction textView = onView(
                 allOf(withId(android.R.id.text1), withText("Dog"),
-                        withParent(allOf(withId(R.id.search_list_view),
+                        withParent(allOf(withId(R.id.search_list),
                                 withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
                         isDisplayed()));
         textView.check(matches(withText("Dog")));
