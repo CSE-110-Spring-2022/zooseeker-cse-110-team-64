@@ -13,6 +13,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
+
 @RunWith(AndroidJUnit4.class)
 public class ClearListButtonUnitTest {
     @Rule
@@ -34,6 +36,10 @@ public class ClearListButtonUnitTest {
         scenario.moveToState(Lifecycle.State.CREATED);
 
         scenario.onActivity(activity -> {
+            ZooGraph.Exhibit testitem = new ZooGraph.Exhibit("",
+                    "","","testAnimal", new ArrayList<>(), 0, 0);
+            activity.selectedExhibitList.add(testitem);
+            assertEquals(activity.selectedExhibitList.size(),1);
             Button clearbtn = activity.findViewById(R.id.clear_list_btn);
             clearbtn.performClick();
             assertEquals(0, activity.selectedExhibitList.size());

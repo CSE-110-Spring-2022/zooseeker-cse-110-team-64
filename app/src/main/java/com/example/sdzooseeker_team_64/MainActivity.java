@@ -94,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
         selectedListView.setAdapter(selectedListAdapter);
 
         //clear whole list using a delete list button
+
+        Button clearListButton = findViewById(R.id.clear_list_btn);
         clearListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
