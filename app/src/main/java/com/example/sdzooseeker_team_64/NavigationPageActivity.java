@@ -207,8 +207,15 @@ public class NavigationPageActivity extends AppCompatActivity {
                 .setTitle("Alert:")
                 .setMessage(msg)
                 .setPositiveButton("Yes", (dialog,id)->{
-                    String str = zooPlan.replanWithUserLocation(latitude, longitude,
-                            zooPlan.getCurrentEndIndex());
+                    String str = "";
+                    if(zooPlan.goingForward()) {
+                        str = zooPlan.replanExhibitsWithUserLocation(latitude, longitude,
+                                zooPlan.getCurrentEndIndex(), zooPlan.exhibits.size() - 2);
+                    }
+                    else {
+                        str = zooPlan.replanExhibitsWithUserLocation(latitude, longitude,
+                                1, zooPlan.getCurrentEndIndex());
+                    }
                     popAnotherAlert(str);
                     updateViews();
                     dialog.cancel();

@@ -25,6 +25,7 @@ public class ZooPlan implements Serializable {
     private int currentEndExhibitIndex;
     double Degree_latitude_in_ft = 363843.57;
     double Degree_longitude_in_ft = 307515.50;
+    double Base = 100;
 
     private ZooGraph.Exhibit getEntranceExitGate() { return zooGraph.getExhibitWithId("entrance_exit_gate"); }
 
@@ -120,12 +121,13 @@ public class ZooPlan implements Serializable {
     }
 
     // Both fromIndex and toIndex are inclusive!
-    public void replanExhibitsWithUserLocation(double userLat, double userLng, int fromIndex, int toIndex) {
-        if(fromIndex == toIndex || fromIndex == 0) { return; }
+    public String replanExhibitsWithUserLocation(double userLat, double userLng, int fromIndex, int toIndex) {
+        String str = "Original distance:";
+        if(fromIndex == toIndex || fromIndex == 0) { return str; }
 
         // get all location for all exhibits within range
         // Notice exhibits with group_id don't have lat/lng
-        Map<Double, ZooGraph.Exhibit> exhibitsToSort = new HashMap<>(); // key value is lat/lng diff
+        Map<ZooGraph.Exhibit, Double> exhibitsToSort = new HashMap<>(); // key value is lat/lng diff
         for(int i = fromIndex; i <= toIndex; i++) {
             // Get direct distance in lat/lng
             ZooGraph.Exhibit exhibit = exhibits.get(i);
@@ -136,18 +138,22 @@ public class ZooPlan implements Serializable {
             double exhibitLng = useGroupLocation ?
                     zooGraph.getExhibitWithId(exhibit.groupId).lng : exhibit.lng;
             // calculate location diff
-            double latDiff = userLat - exhibitLat;
-            double lngDiff = userLng - exhibitLng;
-            double locationDiff = Math.sqrt(Math.pow(latDiff, 2) + Math.pow(lngDiff, 2));
-            exhibitsToSort.put(locationDiff, exhibit);
+            double d_lat = Math.abs(userLat - exhibitLat);
+            double d_lng = Math.abs(userLng - exhibitLng);
+            double d_ft_v = d_lat * Degree_latitude_in_ft;
+            double d_ft_h = d_lng * Degree_longitude_in_ft;
+            double d_ft = Math.sqrt(Math.pow(d_ft_h, 2) + Math.pow(d_ft_v, 2));
+            double locationDiff = Base * Math.ceil(d_ft / Base);
+            str = str + locationDiff + ", ";
+            exhibitsToSort.put(exhibit, locationDiff);
         }
 
         // sort exhibits
         List<ZooGraph.Exhibit> sortedExhibits = new ArrayList<>();
         exhibitsToSort.entrySet()
                 .stream()
-                .sorted(Map.Entry.comparingByKey())
-                .forEachOrdered(x -> sortedExhibits.add(x.getValue()));
+                .sorted(Map.Entry.comparingByValue())
+                .forEachOrdered(x -> sortedExhibits.add(x.getKey()));
 
         // apply exhibits order
         // remove unsorted exhibits
@@ -159,7 +165,7 @@ public class ZooPlan implements Serializable {
         if(goingForward()) {
             for(int i = fromIndex; i <= toIndex; i++) {
                 // add sequentially, before last gate
-                exhibits.add(exhibits.size() - 2, sortedExhibits.get(i - fromIndex));
+                exhibits.add(exhibits.size() - 1, sortedExhibits.get(i - fromIndex));
             }
         } else {
             Collections.reverse(sortedExhibits);
@@ -167,6 +173,7 @@ public class ZooPlan implements Serializable {
                 exhibits.add(i, sortedExhibits.get(i - fromIndex));
             }
         }
+        return str;
 
     }
 

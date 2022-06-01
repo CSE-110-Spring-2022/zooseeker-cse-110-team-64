@@ -99,26 +99,15 @@ public class MainActivity extends AppCompatActivity {
         clearListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                deleteListData(selectedExhibitList.size());
                 selectedExhibitList.clear();
-                saveList(selectedExhibitList);
                 String number = Integer.toString(selectedExhibitList.size());
                 countView.setText(number);
                 selectedListAdapter.notifyDataSetChanged();
             }
         });
 
-        //clear item by clicking
-        selectedListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ZooGraph.Exhibit item = (ZooGraph.Exhibit)adapterView.getItemAtPosition(i);
-                selectedExhibitList.remove(item);
-                saveList(selectedExhibitList);
-                String number = Integer.toString(selectedExhibitList.size());
-                countView.setText(number);
-                selectedListAdapter.notifyDataSetChanged();
-            }
-        });
+
     }
 
     @Override
