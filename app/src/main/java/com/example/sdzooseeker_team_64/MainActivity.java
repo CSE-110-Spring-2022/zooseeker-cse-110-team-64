@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         selectedListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, selectedExhibitList);
         selectedListView.setAdapter(selectedListAdapter);
 
-        //clear whole list using a clear list button
+        //clear whole list using a delete list button
         Button clearList = findViewById(R.id.clear_list_btn);
         clearList.setOnClickListener(new View.OnClickListener() {
             @Override
