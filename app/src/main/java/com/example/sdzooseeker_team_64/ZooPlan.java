@@ -100,7 +100,7 @@ public class ZooPlan implements Serializable {
             replanExhibitsWithUserLocation(userLat, userLng, currentEndExhibitIndex, exhibits.size()-2);
         } else {
             // avoid first gate
-            replanExhibitsWithUserLocation(userLat, userLng, 1, currentStartExhibitIndex);
+            replanExhibitsWithUserLocation(userLat, userLng, 1, currentEndExhibitIndex);
         }
 
     }
