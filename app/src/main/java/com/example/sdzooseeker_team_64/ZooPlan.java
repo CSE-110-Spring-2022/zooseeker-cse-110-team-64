@@ -121,9 +121,8 @@ public class ZooPlan implements Serializable {
     }
 
     // Both fromIndex and toIndex are inclusive!
-    public String replanExhibitsWithUserLocation(double userLat, double userLng, int fromIndex, int toIndex) {
-        String str = "Original distance:";
-        if(fromIndex == toIndex || fromIndex == 0) { return str; }
+    public void replanExhibitsWithUserLocation(double userLat, double userLng, int fromIndex, int toIndex) {
+        if(fromIndex == toIndex || fromIndex == 0) { return; }
 
         // get all location for all exhibits within range
         // Notice exhibits with group_id don't have lat/lng
@@ -144,7 +143,6 @@ public class ZooPlan implements Serializable {
             double d_ft_h = d_lng * Degree_longitude_in_ft;
             double d_ft = Math.sqrt(Math.pow(d_ft_h, 2) + Math.pow(d_ft_v, 2));
             double locationDiff = Base * Math.ceil(d_ft / Base);
-            str = str + locationDiff + ", ";
             exhibitsToSort.put(exhibit, locationDiff);
         }
 
@@ -173,7 +171,6 @@ public class ZooPlan implements Serializable {
                 exhibits.add(i, sortedExhibits.get(i - fromIndex));
             }
         }
-        return str;
 
     }
 

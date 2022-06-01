@@ -207,16 +207,13 @@ public class NavigationPageActivity extends AppCompatActivity {
                 .setTitle("Alert:")
                 .setMessage(msg)
                 .setPositiveButton("Yes", (dialog,id)->{
-                    String str = "";
                     if(zooPlan.goingForward()) {
-                        str = zooPlan.replanExhibitsWithUserLocation(latitude, longitude,
-                                zooPlan.getCurrentEndIndex(), zooPlan.exhibits.size() - 2);
+                        zooPlan.replanExhibitsWithUserLocation(latitude, longitude, zooPlan.getCurrentEndIndex(), zooPlan.exhibits.size() - 2);
                     }
                     else {
-                        str = zooPlan.replanExhibitsWithUserLocation(latitude, longitude,
+                        zooPlan.replanExhibitsWithUserLocation(latitude, longitude,
                                 1, zooPlan.getCurrentEndIndex());
                     }
-                    popAnotherAlert(str);
                     updateViews();
                     dialog.cancel();
                 })
@@ -228,20 +225,5 @@ public class NavigationPageActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    public void popAnotherAlert(String msg){
-        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-        alertBuilder
-                .setTitle("Alert:")
-                .setMessage(msg)
-                .setPositiveButton("Yes", (dialog,id)->{
-                    dialog.cancel();
-                })
-                .setNegativeButton("No", (dialog,id)->{
-                    dialog.cancel();
-                })
-                .setCancelable(true);
-        AlertDialog alertDialog = alertBuilder.create();
-        alertDialog.show();
-    }
 
 }
