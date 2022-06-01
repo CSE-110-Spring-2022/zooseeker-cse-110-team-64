@@ -89,12 +89,15 @@ public class ZooPlan implements Serializable {
 
     public void skipThisExhibit(double userLat, double userLng) {
         // remove the currentEndExhibit and re-plan the ones after it
+        deleteListData(exhibits.size() - 2);
         exhibits.remove(currentEndExhibitIndex);
+        saveList(exhibits);
         // If going forward on plan, don't change the star/end index because exhibits shift forward after removal
         // If going backward, decrement both start/end index so that start exhibit is the same, end exhibit goes backward by one
         if(!goingForward()) {
             currentStartExhibitIndex--;
             currentEndExhibitIndex--;
+            saveIndex(currentStartExhibitIndex, currentEndExhibitIndex);
         }
 
         // Replan the following exhibits according to user location
@@ -105,7 +108,7 @@ public class ZooPlan implements Serializable {
             replanExhibitsWithUserLocation(userLat, userLng, currentEndExhibitIndex, exhibits.size()-2);
         } else {
             // avoid first gate
-            replanExhibitsWithUserLocation(userLat, userLng, 1, currentStartExhibitIndex);
+            replanExhibitsWithUserLocation(userLat, userLng, 1, currentEndExhibitIndex);
         }
 
     }
@@ -492,4 +495,17 @@ public class ZooPlan implements Serializable {
         MyPrefs.saveLength(App.getContext(), "endIndex", e);
     }
 
+    public void saveList(List<ZooGraph.Exhibit> exhibits) {
+        for(int i = 0; i < exhibits.size()-2; i++) {
+            MyPrefs.saveString(App.getContext(), "exhibitList", exhibits.get(i+1).id, i);
+        }
+        MyPrefs.saveLength(App.getContext(), "exhibitListSize",exhibits.size()-2);
+    }
+
+    public void deleteListData(int length) {
+        for(int i = 0; i < length; i++) {
+            MyPrefs.delete(App.getContext(), "exhibitList"+i);
+        }
+        MyPrefs.saveLength(App.getContext(), "exhibitListSize", 0);
+    }
 }
