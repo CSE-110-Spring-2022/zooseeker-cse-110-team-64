@@ -169,6 +169,12 @@ public class MainActivity extends AppCompatActivity {
         MyPrefs.saveLength(App.getContext(), "exhibitListSize",exhibits.size());
     }
 
+    public void deleteListData(int length) {
+        for(int i = 0; i < length; i++) {
+            MyPrefs.delete(App.getContext(), "exhibitList"+i);
+        }
+        MyPrefs.saveLength(App.getContext(), "exhibitListSize", 0);
+    }
     private boolean ensurePermissions() {
 
         return permissionChecker.ensurePermissions();

@@ -1,14 +1,18 @@
 package com.example.sdzooseeker_team_64;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -42,6 +46,9 @@ public class NavigationPageActivity extends AppCompatActivity {
     private Button enterButton;
     private TextView latitudeText;
     private TextView longitudeText;
+    private Switch gpsSwitch;
+    double latitude;
+    double longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,29 +85,51 @@ public class NavigationPageActivity extends AppCompatActivity {
 
         //location
         enterButton = findViewById(R.id.enter_btn);
-        enterButton.setOnClickListener(this::onClick);
+        enterButton.setOnClickListener(this::onEnterButtonClick);
         latitudeText = findViewById(R.id.latitude_txt);
         longitudeText = findViewById(R.id.longitude_txt);
-        locationMangaer = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        gpsSwitch = findViewById(R.id.GPS_switch);
+        gpsSwitch.setOnCheckedChangeListener(this::onCheckedChanged);
 
 
         updateViews();
         saveClass();
     }
-
     @SuppressLint("MissingPermission")
-    public void onClick(View v) {
-        locationListener = new MyLocationListener();
-        if (permissionChecker.ensurePermissions()) return;
-        locationMangaer.requestLocationUpdates(LocationManager
-                .GPS_PROVIDER, 0, 0f, locationListener);
+    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+
+        if(isChecked) {
+            locationListener = new MyLocationListener();
+            locationMangaer = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            if (permissionChecker.ensurePermissions()) return;
+            locationMangaer.requestLocationUpdates(LocationManager
+                    .GPS_PROVIDER, 0, 0f, locationListener);
+        }
+        else {
+            locationMangaer.removeUpdates(locationListener);
+            locationListener = null;
+            locationMangaer = null;
+        }
+    }
+
+    public void onEnterButtonClick(View view) {
+        latitude = Double.parseDouble(latitudeText.getText().toString());
+        longitude = Double.parseDouble(longitudeText.getText().toString());
+        boolean offtrack = zooPlan.checkOffTrack(latitude, longitude);
+        if(offtrack) {
+            popAlert("Off track! Want to replan?");
+        }
+        else {
+            return;
+        }
     }
 
     private class MyLocationListener implements LocationListener {
         @Override
         public void onLocationChanged(Location loc) {
-            String longitude = "Longitude: " +loc.getLongitude();
-            String latitude = "Latitude: " +loc.getLatitude();
+            //boolean offtrack = zooPlan.checkOffTrack(loc.getLatitude(), loc.getLongitude());
+            String longitude = Double.toString(loc.getLongitude());
+            String latitude = Double.toString(loc.getLatitude());
             latitudeText.setText(latitude);
             longitudeText.setText(longitude);
 
@@ -148,8 +177,7 @@ public class NavigationPageActivity extends AppCompatActivity {
     }
 
     public void onSkipBtnClicked(View view) {
-        // TODO: Pass in user location data
-//        zooPlan.skipThisExhibit();
+        zooPlan.skipThisExhibit(latitude, longitude);
         updateViews();
     }
 
@@ -173,7 +201,40 @@ public class NavigationPageActivity extends AppCompatActivity {
         return exhibitList;
     }
 
+    public void popAlert(String msg){
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        alertBuilder
+                .setTitle("Alert:")
+                .setMessage(msg)
+                .setPositiveButton("Yes", (dialog,id)->{
+                    String str = zooPlan.replanWithUserLocation(latitude, longitude,
+                            zooPlan.getCurrentEndIndex());
+                    popAnotherAlert(str);
+                    updateViews();
+                    dialog.cancel();
+                })
+                .setNegativeButton("No", (dialog,id)->{
+                    dialog.cancel();
+                })
+                .setCancelable(true);
+        AlertDialog alertDialog = alertBuilder.create();
+        alertDialog.show();
+    }
 
-
+    public void popAnotherAlert(String msg){
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        alertBuilder
+                .setTitle("Alert:")
+                .setMessage(msg)
+                .setPositiveButton("Yes", (dialog,id)->{
+                    dialog.cancel();
+                })
+                .setNegativeButton("No", (dialog,id)->{
+                    dialog.cancel();
+                })
+                .setCancelable(true);
+        AlertDialog alertDialog = alertBuilder.create();
+        alertDialog.show();
+    }
 
 }

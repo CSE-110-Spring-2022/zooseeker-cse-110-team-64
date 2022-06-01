@@ -50,5 +50,10 @@ public class MyPrefs {
         SharedPreferences myPref = getSharedPreferences(context);
         return myPref.getInt(key, 1);
     }
+    public static void delete(Context context, String key) {
+        SharedPreferences myPref = getSharedPreferences(context);
+        SharedPreferences.Editor editor = myPref.edit();
+        editor.remove(key);
+    }
 
 }
