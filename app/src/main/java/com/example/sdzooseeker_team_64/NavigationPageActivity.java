@@ -61,6 +61,8 @@ public class NavigationPageActivity extends AppCompatActivity {
         int currentSize = MyPrefs.getTheLength(App.getContext(), "exhibitListSize");
         zooGraph = new ZooGraph(this);
         zooPlan = new ZooPlan(zooGraph, loadList(currentSize));
+        zooPlan.setStartIndex(MyPrefs.getTheLength(App.getContext(), "startIndex"));
+        zooPlan.setEndIndex(MyPrefs.getLengthDefaultOne(App.getContext(), "endIndex"));
         path = new ArrayList<>();
 
         // Setup view references
@@ -171,6 +173,7 @@ public class NavigationPageActivity extends AppCompatActivity {
         if(zooPlan.canGoNext()) {
             zooPlan.goToNextExhibit();
         } else {
+            zooPlan.saveIndex(0,1);
             this.finish();
         }
         updateViews();
@@ -224,6 +227,8 @@ public class NavigationPageActivity extends AppCompatActivity {
         AlertDialog alertDialog = alertBuilder.create();
         alertDialog.show();
     }
+
+
 
 
 }

@@ -46,10 +46,12 @@ public class MyPrefs {
         SharedPreferences myPref = getSharedPreferences(context);
         return myPref.getInt(key, 0);
     }
-    public static int getStatus(Context context, String key) {
+
+    public static int getLengthDefaultOne(Context context, String key) {
         SharedPreferences myPref = getSharedPreferences(context);
         return myPref.getInt(key, 1);
     }
+
     public static void delete(Context context, String key) {
         SharedPreferences myPref = getSharedPreferences(context);
         SharedPreferences.Editor editor = myPref.edit();
